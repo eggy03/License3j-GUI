@@ -1,7 +1,6 @@
 package io.github.eggy03.application.services;
 
-import io.github.eggy03.application.enums.LicenseState;
-import io.github.eggy03.application.exception.LicenseFeatureException;
+import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.exception.LicenseReadException;
 import io.github.eggy03.application.exception.LicenseSaveException;
 import io.github.eggy03.application.exception.LicenseViewException;
@@ -12,7 +11,6 @@ import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,88 +19,82 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @Slf4j
+@SuppressWarnings("java:S1192")
 public class LicenseGenerationService {
 
-    @Nullable
-    private License license = null;
+    private static final int MAX_LICENSE_SIZE = 20 * 1024 * 1024;
 
-    @NonNull
-    private LicenseState licenseState = LicenseState.UNINITIALIZED;
-
-    @Nullable
-    public synchronized License getLicense(){
-        return license;
-    }
-
-    @NonNull
-    public synchronized LicenseState getLicenseState() {
-        return licenseState;
-    }
-
-    public synchronized void generateLicense() {
-        license = new License();
-        licenseState = LicenseState.NEW;
+    public LicenseEntity generateLicense() {
         log.info("A new license has been generated in memory");
+        return new LicenseEntity(new License(), false, false);
     }
 
-    public synchronized void loadLicense(@NonNull File licenseToLoad, @NonNull IOFormat licenseFormat) {
+    public LicenseEntity loadLicense(@NonNull File licenseToLoad, @NonNull IOFormat licenseFormat) {
         Objects.requireNonNull(licenseToLoad, "license file to be loaded cannot be null");
         Objects.requireNonNull(licenseFormat, "license format of the loaded license cannot be null");
 
-        try(LicenseReader licenseReader = new LicenseReader(licenseToLoad, 20971520)) {
-
-            license = licenseReader.readChecking(licenseFormat);
-            licenseState = LicenseState.LOADED;
+        try (LicenseReader licenseReader = new LicenseReader(licenseToLoad, MAX_LICENSE_SIZE)) {
+            log.info("A new license has been loaded in memory");
+            return new LicenseEntity(licenseReader.readChecking(licenseFormat), false, false);
 
         } catch (IOException e) {
+            log.error("License Read Failure", e);
             throw new LicenseReadException("license cannot be read", e);
         }
 
     }
 
-    public synchronized void addFeature(@NonNull Feature feature) {
+    public LicenseEntity addFeature(@NonNull LicenseEntity licenseEntity, @NonNull Feature feature) {
 
+        Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
         Objects.requireNonNull(feature, "feature to be added cannot be null");
 
-        if(license==null || licenseState==LicenseState.UNINITIALIZED)
-            throw new LicenseFeatureException("Cannot add feature because license was either null or it's state was uninitialized");
+        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "cannot add feature because license cannot be null");
+        License copyLicense = License.Create.from(originalLicense.serialized());
 
-        license.add(feature);
-        licenseState = LicenseState.MODIFIED_REQUIRES_SIGNING;
+        // mutation operation on license
+        copyLicense.add(feature);
+        return new LicenseEntity(copyLicense, false, false); // adding features should invalidate existing signature and save status
     }
 
-    public synchronized void saveLicense(@NonNull String licenseName, @NonNull String licenseSavePath, @NonNull IOFormat licenseFormat) {
+    public LicenseEntity saveLicense(@NonNull LicenseEntity licenseEntity, @NonNull File licenseFolder, @NonNull String licenseName, @NonNull IOFormat licenseFormat) {
 
+        Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
+        Objects.requireNonNull(licenseFolder, "licenseFolder cannot be null");
         Objects.requireNonNull(licenseName, "licenseName cannot be null");
         Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
-        Objects.requireNonNull(licenseSavePath, "licenseSavePath cannot be null");
 
-        if(license==null || licenseState==LicenseState.UNINITIALIZED)
-            throw new LicenseSaveException("cannot save license because it was either null or it's state was uninitialized");
+        if (!licenseFolder.isDirectory())
+            throw new LicenseSaveException("provided license folder is not a directory");
 
-        File licenseFolder = new File(licenseSavePath);
-        if(!licenseFolder.isDirectory())
-            throw new LicenseSaveException("provided license save path is not a directory");
+        if (licenseName.contains("..") || licenseName.contains("/") || licenseName.contains("\\")) {
+            throw new LicenseSaveException("Invalid license name");
+        }
 
-        try (LicenseWriter licenseWriter = new LicenseWriter(licenseFolder+File.separator+licenseName)) {
+        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "license to be saved cannot be null");
+        License copyLicense = License.Create.from(originalLicense.serialized());
 
-            licenseWriter.write(license, licenseFormat);
-            licenseState=LicenseState.SAVED;
+        try (LicenseWriter licenseWriter = new LicenseWriter(new File(licenseFolder, licenseName))) {
+            licenseWriter.write(copyLicense, licenseFormat);
+            log.info("license saved at {}", licenseFolder.getCanonicalPath());
+            return new LicenseEntity(copyLicense, licenseEntity.signed(), true);
 
         } catch (IOException e) {
+            log.error("License Save Failure", e);
             throw new LicenseSaveException("license could not be saved", e);
         }
 
     }
 
-    public synchronized String viewLicense() {
-        if (license==null || licenseState==LicenseState.UNINITIALIZED)
-            throw new LicenseViewException("cannot view license because it is either null or it's state is uninitialized");
+    public String viewLicense(@NonNull LicenseEntity licenseEntity) {
+
+        Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); LicenseWriter lw = new LicenseWriter(outputStream)) {
-            lw.write(license, IOFormat.STRING);
+            lw.write(Objects.requireNonNull(licenseEntity.license(), "license to be viewed cannot be null"), IOFormat.STRING);
             return outputStream.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
+            log.error("License View Error", e);
             throw new LicenseViewException("cannot view license", e);
         }
     }
