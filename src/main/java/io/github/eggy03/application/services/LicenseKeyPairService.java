@@ -77,10 +77,10 @@ public class LicenseKeyPairService {
         if(!keyFolder.isDirectory())
             throw new KeySaveException("Provided key folder:" + keyFolder.getPath() + "is not a directory");
 
-        if(!privateKeyName.matches("\\w+"))
+        if(!privateKeyName.matches("^[a-zA-Z0-9._-]+$"))
             throw new KeySaveException("Private Key name:" + privateKeyName + "contains invalid characters");
 
-        if(!publicKeyName.matches("\\w+"))
+        if(!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
             throw new KeySaveException("Public Key name:" + publicKeyName + "contains invalid characters");
 
         try(KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {

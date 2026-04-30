@@ -63,7 +63,7 @@ public class LicenseSignService {
             throw new LicenseSaveException("Provided license folder:" + licenseFolder.getPath() + "is not a directory");
         }
 
-        if (!licenseName.matches("\\w+")) {
+        if (!licenseName.matches("^[a-zA-Z0-9._-]+$")) {
             throw new LicenseSaveException("License name:" + licenseName + "contains invalid characters");
         }
 
