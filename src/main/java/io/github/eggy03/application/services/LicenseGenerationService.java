@@ -23,11 +23,13 @@ public class LicenseGenerationService {
 
     private static final int MAX_LICENSE_SIZE = 20 * 1024 * 1024;
 
+    @NonNull
     public LicenseEntity generateLicense() {
         log.info("A new license has been generated in memory");
         return new LicenseEntity(new License(), false, false);
     }
 
+    @NonNull
     public LicenseEntity loadLicense(@NonNull File licenseToLoad, @NonNull IOFormat licenseFormat) {
 
         Objects.requireNonNull(licenseToLoad, "licenseToLoad cannot be null");
@@ -44,6 +46,7 @@ public class LicenseGenerationService {
 
     }
 
+    @NonNull
     public LicenseEntity addFeature(@NonNull LicenseEntity licenseEntity, @NonNull Feature feature) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
@@ -58,6 +61,7 @@ public class LicenseGenerationService {
         return new LicenseEntity(copyLicense, false, false); // adding features should invalidate existing signature and save status
     }
 
+    @NonNull
     public String viewLicense(@NonNull LicenseEntity licenseEntity) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");

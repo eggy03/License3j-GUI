@@ -26,6 +26,7 @@ public class LicenseSignService {
 
     private static final String DIGEST = "SHA-512";
 
+    @NonNull
     public LicenseEntity sign(@NonNull LicenseEntity licenseEntity, @NonNull PrivateKey privateKey) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
@@ -53,6 +54,7 @@ public class LicenseSignService {
         return license.isOK(publicKey);
     }
 
+    @NonNull
     public LicenseEntity saveLicense(@NonNull LicenseEntity licenseEntity, @NonNull File licenseFolder, @NonNull String licenseName, @NonNull IOFormat licenseFormat) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
