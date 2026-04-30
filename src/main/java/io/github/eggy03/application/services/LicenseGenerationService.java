@@ -8,7 +8,6 @@ import javax0.license3j.License;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseReader;
 import javax0.license3j.io.LicenseWriter;
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-@Slf4j
 @SuppressWarnings("java:S1192")
 public class LicenseGenerationService {
 
@@ -25,7 +23,6 @@ public class LicenseGenerationService {
 
     @NonNull
     public LicenseEntity generateLicense() {
-        log.info("A new license has been generated in memory");
         return new LicenseEntity(new License(), false, false);
     }
 
@@ -36,11 +33,8 @@ public class LicenseGenerationService {
         Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
 
         try (LicenseReader licenseReader = new LicenseReader(licenseToLoad, MAX_LICENSE_SIZE)) {
-            log.info("A new license has been loaded in memory");
             return new LicenseEntity(licenseReader.readChecking(licenseFormat), false, false);
-
         } catch (IOException e) {
-            log.error("License read failure", e);
             throw new LicenseReadException("License read failure", e);
         }
 
@@ -57,7 +51,6 @@ public class LicenseGenerationService {
 
         // mutation operation on copied license
         copyLicense.add(feature);
-        log.info("Feature: {}={} has been added to the license", feature.name(), feature.valueString());
         return new LicenseEntity(copyLicense, false, false); // adding features should invalidate existing signature and save status
     }
 
@@ -71,7 +64,6 @@ public class LicenseGenerationService {
             lw.write(licenseEntity.license(), IOFormat.STRING);
             return outputStream.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
-            log.error("License view failure", e);
             throw new LicenseViewException("License view failure", e);
         }
     }

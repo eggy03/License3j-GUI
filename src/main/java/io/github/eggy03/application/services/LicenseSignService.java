@@ -6,7 +6,6 @@ import io.github.eggy03.application.exception.LicenseSignException;
 import javax0.license3j.License;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseWriter;
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 
 import javax.crypto.BadPaddingException;
@@ -20,7 +19,6 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Objects;
 
-@Slf4j
 @SuppressWarnings("java:S1192")
 public class LicenseSignService {
 
@@ -39,7 +37,6 @@ public class LicenseSignService {
             copyLicense.sign(privateKey, DIGEST);
             return new LicenseEntity(copyLicense, true, licenseEntity.isSaved());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            log.error("License sign failure", e);
             throw new LicenseSignException("License sign failure", e);
         }
     }
@@ -63,13 +60,11 @@ public class LicenseSignService {
         Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
 
         if (!licenseFolder.isDirectory()) {
-            log.error("Provided license folder: {} is not a directory", licenseFolder.getPath());
-            throw new LicenseSaveException("Provided license folder is not a directory");
+            throw new LicenseSaveException("Provided license folder:" + licenseFolder.getPath() + "is not a directory");
         }
 
         if (!licenseName.matches("\\w")) {
-            log.error("License name: {} contains invalid characters", licenseName);
-            throw new LicenseSaveException("License name contains invalid characters");
+            throw new LicenseSaveException("License name:" + licenseName + "contains invalid characters");
         }
 
         License originalLicense = Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
@@ -77,11 +72,9 @@ public class LicenseSignService {
 
         try (LicenseWriter licenseWriter = new LicenseWriter(new File(licenseFolder, licenseName))) {
             licenseWriter.write(copyLicense, licenseFormat);
-            log.info("License saved at: {}", licenseFolder.getCanonicalPath());
             return new LicenseEntity(copyLicense, licenseEntity.isSigned(), true);
 
         } catch (IOException e) {
-            log.error("License save failure", e);
             throw new LicenseSaveException("License save failure", e);
         }
 
