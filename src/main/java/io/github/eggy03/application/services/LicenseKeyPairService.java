@@ -1,5 +1,6 @@
 package io.github.eggy03.application.services;
 
+import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.exception.KeyDigestException;
 import io.github.eggy03.application.exception.KeyGenerationException;
 import io.github.eggy03.application.exception.KeyReadException;
@@ -22,16 +23,16 @@ import java.util.Objects;
 public class LicenseKeyPairService {
 
     @NonNull
-    public LicenseKeyPair generateKeyPair(@NonNull String cipher, int size) {
+    public LicenseKeyPairEntity generateKeyPair(@NonNull String cipher, int size) {
         try {
-            return LicenseKeyPair.Create.from(cipher, size);
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(cipher, size), true, false);
         } catch (NoSuchAlgorithmException e) {
             throw new KeyGenerationException("Incompatible Cipher", e);
         }
     }
 
     @NonNull
-    public LicenseKeyPair loadKeyPair(@NonNull File privateKeyFile, @NonNull File publicKeyFile, @NonNull IOFormat keyFormat) {
+    public LicenseKeyPairEntity loadKeyPair(@NonNull File privateKeyFile, @NonNull File publicKeyFile, @NonNull IOFormat keyFormat) {
 
         Objects.requireNonNull(privateKeyFile, "privateKeyFile cannot be null");
         Objects.requireNonNull(publicKeyFile, "publicKeyFile cannot be null");
@@ -56,7 +57,7 @@ public class LicenseKeyPairService {
             PrivateKey privateKey = Objects.requireNonNull(privateKeyPair.getPair().getPrivate(), "privateKey cannot be null");
             PublicKey publicKey = Objects.requireNonNull(publicKeyPair.getPair().getPublic(), "publicKey cannot be null");
 
-            return LicenseKeyPair.Create.from(publicKey, privateKey, cipher);
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(publicKey, privateKey, cipher), true, true);
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new KeyReadException("Key read failure", e);
@@ -64,9 +65,10 @@ public class LicenseKeyPairService {
 
     }
 
-    public void saveKeys(@NonNull LicenseKeyPair keyPair, @NonNull IOFormat keyFormat, @NonNull String privateKeyName, @NonNull String publicKeyName, @NonNull File keyFolder) {
+    @NonNull
+    public LicenseKeyPairEntity saveKeys(@NonNull LicenseKeyPairEntity keyPairEntity, @NonNull IOFormat keyFormat, @NonNull String privateKeyName, @NonNull String publicKeyName, @NonNull File keyFolder) {
 
-        Objects.requireNonNull(keyPair, "keyPair cannot be null");
+        Objects.requireNonNull(keyPairEntity, "keyPairEntity cannot be null");
         Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
 
         Objects.requireNonNull(privateKeyName, "privateKeyName cannot be null");
@@ -83,8 +85,12 @@ public class LicenseKeyPairService {
         if(!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
             throw new KeySaveException("Public Key name:" + publicKeyName + "contains invalid characters");
 
+        LicenseKeyPair originalKeyPair = Objects.requireNonNull(keyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
+        LicenseKeyPair copyKeyPair = LicenseKeyPair.Create.from(originalKeyPair.getPair(), originalKeyPair.cipher());
+
         try(KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {
-            keyPairWriter.write(keyPair, keyFormat);
+            keyPairWriter.write(copyKeyPair, keyFormat);
+            return new LicenseKeyPairEntity(copyKeyPair, true, true);
         } catch (IOException e) {
             throw new KeySaveException("Key save failure", e);
         }
