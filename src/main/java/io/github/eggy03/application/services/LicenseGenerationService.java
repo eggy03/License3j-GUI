@@ -77,7 +77,7 @@ public class LicenseGenerationService {
         try (LicenseWriter licenseWriter = new LicenseWriter(new File(licenseFolder, licenseName))) {
             licenseWriter.write(copyLicense, licenseFormat);
             log.info("license saved at {}", licenseFolder.getCanonicalPath());
-            return new LicenseEntity(copyLicense, licenseEntity.signed(), true);
+            return new LicenseEntity(copyLicense, licenseEntity.isSigned(), true);
 
         } catch (IOException e) {
             log.error("License Save Failure", e);
