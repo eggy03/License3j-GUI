@@ -20,7 +20,7 @@ import java.awt.Toolkit;
 public class MainUI extends JFrame {
 
     @NonNull
-    private static final Rectangle INIT_RES = new Rectangle(100, 100, 500, 1000);
+    private static final Rectangle INIT_RES = new Rectangle(100, 100, 850, 500);
 
     public MainUI() {
 
@@ -30,13 +30,15 @@ public class MainUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JPanel contentPane = new JPanel(new MigLayout("insets 0", "[grow][grow][grow]", "[][grow][grow]"));
+        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
 
         contentPane.add(menuPanel(), "cell 0 0 3 1, grow"); // cell column row width height
         contentPane.add(licensePanel(), "cell 0 1, grow");
         contentPane.add(featurePanel(), "cell 1 1, grow");
         contentPane.add(keyPanel(), "cell 2 1, grow");
-        contentPane.add(statusPanel(), "cell 0 2 3 1, grow");
+        contentPane.add(logPanel(), "cell 0 2 2 1, grow");
+        contentPane.add(statusPanel(), "cell 2 2 1 1, grow");
+
         setContentPane(contentPane);
     }
 
@@ -64,19 +66,25 @@ public class MainUI extends JFrame {
 
     private @NonNull JPanel featurePanel() {
         JPanel featurePanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        featurePanel.setBorder(new TitledBorder("Feature Panel"));
+        featurePanel.setBorder(new TitledBorder("License Features"));
         return featurePanel;
     }
 
     private @NonNull JPanel keyPanel() {
         JPanel keyPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        keyPanel.setBorder(new TitledBorder("Key Panel"));
+        keyPanel.setBorder(new TitledBorder("Sign Keys"));
         return keyPanel;
+    }
+
+    private @NonNull JPanel logPanel() {
+        JPanel logPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
+        logPanel.setBorder(new TitledBorder("Operation Log"));
+        return logPanel;
     }
 
     private @NonNull JPanel statusPanel() {
         JPanel statusPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        statusPanel.setBorder(new TitledBorder("Status Panel"));
+        statusPanel.setBorder(new TitledBorder("Status"));
         return statusPanel;
     }
 }
