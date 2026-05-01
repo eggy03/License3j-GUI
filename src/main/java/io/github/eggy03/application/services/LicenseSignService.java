@@ -1,9 +1,11 @@
 package io.github.eggy03.application.services;
 
 import io.github.eggy03.application.entity.LicenseEntity;
+import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.exception.LicenseSaveException;
 import io.github.eggy03.application.exception.LicenseSignException;
 import javax0.license3j.License;
+import javax0.license3j.crypto.LicenseKeyPair;
 import javax0.license3j.io.IOFormat;
 import javax0.license3j.io.LicenseWriter;
 import org.jspecify.annotations.NonNull;
@@ -14,6 +16,7 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidKeyException;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -25,12 +28,16 @@ public class LicenseSignService {
     private static final String DIGEST = "SHA-512";
 
     @NonNull
-    public LicenseEntity sign(@NonNull LicenseEntity licenseEntity, @NonNull PrivateKey privateKey) {
+    public LicenseEntity sign(@NonNull LicenseEntity licenseEntity, @NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
-        Objects.requireNonNull(privateKey, "privateKey cannot be null");
+        Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
 
-        License orignalLicense = Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
+        LicenseKeyPair licenseKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
+        KeyPair keyPair = Objects.requireNonNull(licenseKeyPair.getPair(), "keyPair cannot be null");
+        PrivateKey privateKey = Objects.requireNonNull(keyPair.getPrivate(), "privateKey cannot be null");
+
+        License orignalLicense = Objects.requireNonNull(licenseEntity.license(), "originalLicense cannot be null");
         License copyLicense = License.Create.from(orignalLicense.serialized());
 
         try {
@@ -41,12 +48,16 @@ public class LicenseSignService {
         }
     }
 
-    public boolean verify(@NonNull LicenseEntity licenseEntity, @NonNull PublicKey publicKey) {
+    public boolean verify(@NonNull LicenseEntity licenseEntity, @NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
-        Objects.requireNonNull(publicKey, "publicKey cannot be null");
+        Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
 
-        License license = Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
+        LicenseKeyPair licenseKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
+        KeyPair keyPair = Objects.requireNonNull(licenseKeyPair.getPair(), "keyPair cannot be null");
+        PublicKey publicKey = Objects.requireNonNull(keyPair.getPublic(), "publicKey cannot be null");
+
+        License license = Objects.requireNonNull(licenseEntity.license(), "license cannot be null");
 
         return license.isOK(publicKey);
     }

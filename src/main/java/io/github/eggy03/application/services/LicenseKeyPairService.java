@@ -97,11 +97,13 @@ public class LicenseKeyPairService {
     }
 
     @NonNull
-    public String digestPublicKey(@NonNull LicenseKeyPair keyPair) {
-        Objects.requireNonNull(keyPair, "keyPair cannot be null");
+    public String digestPublicKey(@NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
+
+        Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
+        LicenseKeyPair licenseKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
 
         try {
-            byte[] publicKey = keyPair.getPublic();
+            byte[] publicKey = Objects.requireNonNull(licenseKeyPair.getPublic());
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
 
             byte[] calculatedDigest = digest.digest(publicKey);
