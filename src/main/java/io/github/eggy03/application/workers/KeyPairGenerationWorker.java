@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class KeyPairGenerationWorker extends SwingWorker<Void, Void> {
+public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
     private final String cipher;
@@ -21,16 +21,15 @@ public class KeyPairGenerationWorker extends SwingWorker<Void, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Void doInBackground() {
+    protected String doInBackground() {
         licenseKeyPairEntity.set(service.generateKeyPair(cipher, size));
-        return null;
+        return "INFO: Keys have been generated in memory.";
     }
 
     @Override
     protected void done() {
         try {
-            get();
-            textArea.setText("INFO: Keys have been generated in memory.");
+            textArea.setText(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Key generation interrupted", e.getCause());

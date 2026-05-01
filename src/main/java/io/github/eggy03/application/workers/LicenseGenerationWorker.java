@@ -12,23 +12,22 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LicenseGenerationWorker extends SwingWorker<Void, Void> {
+public class LicenseGenerationWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntity;
     private final LicenseGenerationService service;
     private final JTextArea textArea;
 
     @Override
-    protected Void doInBackground() {
+    protected String doInBackground() {
         licenseEntity.set(service.generateLicense());
-        return null;
+        return "INFO: A new license has been generated in memory";
     }
 
     @Override
     protected void done() {
         try {
-            get();
-            textArea.append("INFO: A new license has been generated in memory");
+            textArea.append(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("License generation interrupted", e.getCause());

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LicenseSignWorker extends SwingWorker<Void, Void> {
+public class LicenseSignWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntity;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
@@ -21,16 +21,21 @@ public class LicenseSignWorker extends SwingWorker<Void, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Void doInBackground() {
+    protected String doInBackground() {
+        if(licenseEntity.get().license()==null)
+            return "ERROR: No license is loaded in memory";
+
+        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
+            return "ERROR: No keys are loaded in memory";
+
         licenseEntity.set(service.sign(licenseEntity.get(), licenseKeyPairEntity.get()));
-        return null;
+        return "INFO: License has been signed. Please save your license and keys before exiting";
     }
 
     @Override
     protected void done() {
         try {
-            get();
-            textArea.setText("INFO: License has been signed. Please save your license and keys before exiting");
+            textArea.setText(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("License sign interrupted", e.getCause());

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class KeyPairLoaderWorker extends SwingWorker<Void, Void> {
+public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
     private final File privateKeyFile;
@@ -24,16 +24,15 @@ public class KeyPairLoaderWorker extends SwingWorker<Void, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Void doInBackground() {
+    protected String doInBackground() {
         licenseKeyPairEntity.set(service.loadKeyPair(privateKeyFile, publicKeyFile, keyFormat));
-        return null;
+        return "INFO: Keys have been loaded in memory.";
     }
 
     @Override
     protected void done() {
         try {
-            get();
-            textArea.setText("INFO: Keys have been loaded in memory.");
+            textArea.setText(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Key load interrupted", e.getCause());

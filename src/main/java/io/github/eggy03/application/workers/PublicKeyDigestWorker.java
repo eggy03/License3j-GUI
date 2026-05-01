@@ -20,6 +20,9 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
 
     @Override
     protected String doInBackground() {
+        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
+            return "ERROR: License keys have not been loaded in memory";
+
         return service.digestPublicKey(licenseKeyPairEntity.get());
     }
 

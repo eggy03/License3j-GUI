@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LicenseFeatureAdditionWorker extends SwingWorker<Feature, Void> {
+public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntity;
     private final Feature feature;
@@ -21,16 +21,19 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<Feature, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Feature doInBackground() {
+    protected String doInBackground() {
+
+        if(licenseEntity.get().license()==null)
+            return "ERROR: No license is loaded in memory";
+
         licenseEntity.set(service.addFeature(licenseEntity.get(), feature));
-        return feature;
+        return "INFO: Feature" + feature.name() + "=" + feature.valueString() + "added to the license";
     }
 
     @Override
     protected void done() {
         try {
-            get();
-            textArea.append("INFO: Feature" + feature.name() + "=" + feature.valueString() + "added to the license");
+            textArea.append(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("License feature add interrupted", e.getCause());

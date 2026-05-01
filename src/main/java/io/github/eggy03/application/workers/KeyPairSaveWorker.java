@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class KeyPairSaveWorker extends SwingWorker<Void, Void> {
+public class KeyPairSaveWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
     private final File keyFolder;
@@ -25,16 +25,18 @@ public class KeyPairSaveWorker extends SwingWorker<Void, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Void doInBackground() {
+    protected String doInBackground() {
+        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
+            return "ERROR: No keys are loaded in memory";
+
         licenseKeyPairEntity.set(service.saveKeys(licenseKeyPairEntity.get(), keyFormat, privateKeyName, publicKeyName, keyFolder));
-        return null;
+        return "INFO: Keys have been saved.";
     }
 
     @Override
     protected void done(){
         try {
-            get();
-            textArea.setText("INFO: Keys have been saved.");
+            textArea.setText(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Key save interrupted", e.getCause());

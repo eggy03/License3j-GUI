@@ -21,6 +21,10 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
 
     @Override
     protected String doInBackground() {
+
+        if(licenseEntity.get().license()==null)
+            return "ERROR: No license is loaded in memory";
+
         return service.viewLicense(licenseEntity.get());
     }
 

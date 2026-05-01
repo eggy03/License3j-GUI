@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LicenseVerifyWorker extends SwingWorker<Boolean, Void> {
+public class LicenseVerifyWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntity;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
@@ -21,17 +21,22 @@ public class LicenseVerifyWorker extends SwingWorker<Boolean, Void> {
     private final JTextArea textArea;
 
     @Override
-    protected Boolean doInBackground() {
-        return service.verify(licenseEntity.get(), licenseKeyPairEntity.get());
+    protected String doInBackground() {
+
+        if(licenseEntity.get().license()==null)
+            return "ERROR: No license is loaded in memory";
+
+        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
+            return "ERROR: No keys are loaded in memory";
+
+        boolean verified = service.verify(licenseEntity.get(), licenseKeyPairEntity.get());
+        return verified ? "INFO: License signature verified" : "WARN: License signature verification failed. Please sign the license again.";
     }
 
     @Override
     protected void done() {
         try {
-            if (Boolean.TRUE.equals(get()))
-                textArea.append("INFO: License signature verified");
-            else
-                textArea.append("WARN: License signature verification failed. Please sign the license again.");
+            textArea.append(get());
         } catch (InterruptedException e) {
             textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("License verify interrupted", e.getCause());
