@@ -42,7 +42,7 @@ public class LicenseSignService {
 
         try {
             copyLicense.sign(privateKey, DIGEST);
-            return new LicenseEntity(copyLicense, true, licenseEntity.isSaved());
+            return new LicenseEntity(copyLicense, true, false); // even if you are re-signing a saved license, you should re-save it
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             throw new LicenseSignException("License sign failure", e);
         }
