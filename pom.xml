@@ -1,64 +1,102 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-    <groupId>io.github.egg-03</groupId>
+
+    <groupId>io.github.eggy03</groupId>
     <artifactId>license3j-gui</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.0-alpha1</version>
+
     <name>License3j-GUI</name>
     <description>A GUI for License3j REPL application</description>
+
+    <!-- ===================== PROPERTIES ===================== -->
     <properties>
+        <!-- Build -->
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Dependency versions -->
+        <!-- Dependencies -->
+        <license3j.version>3.3.0</license3j.version>
+        <tinylog.version>2.7.0</tinylog.version>
+        <miglayout.version>11.4.2</miglayout.version>
+        <commons.io.version>2.19.0</commons.io.version>
+        <flatlaf.version>3.5.4</flatlaf.version>
+        <flexmark.version>0.64.8</flexmark.version>
         <lombok.version>1.18.44</lombok.version>
         <jspecify.version>1.0.0</jspecify.version>
         <slf4j.version>2.0.17</slf4j.version>
 
-        <!-- Plugin versions -->
+        <!-- Plugins -->
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
     </properties>
+
+    <!-- ===================== DEPENDENCIES ===================== -->
     <dependencies>
+
+        <!-- License -->
         <dependency>
             <groupId>com.javax0.license3j</groupId>
             <artifactId>license3j</artifactId>
-            <version>3.3.0</version>
+            <version>${license3j.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>slf4j-tinylog</artifactId>
+            <version>${tinylog.version}</version>
         </dependency>
         <dependency>
             <groupId>org.tinylog</groupId>
             <artifactId>tinylog-api</artifactId>
-            <version>2.7.0</version>
+            <version>${tinylog.version}</version>
         </dependency>
         <dependency>
             <groupId>org.tinylog</groupId>
             <artifactId>tinylog-impl</artifactId>
-            <version>2.7.0</version>
+            <version>${tinylog.version}</version>
         </dependency>
+
+        <!-- UI -->
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout-swing</artifactId>
-            <version>11.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.19.0</version>
+            <version>${miglayout.version}</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.5.4</version>
+            <version>${flatlaf.version}</version>
         </dependency>
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
-            <version>3.5.4</version>
+            <version>${flatlaf.version}</version>
         </dependency>
+
+        <!-- Utilities -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <!-- Markdown -->
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
             <artifactId>flexmark-all</artifactId>
-            <version>0.64.8</version>
+            <version>${flexmark.version}</version>
         </dependency>
+
+        <!-- Annotations -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -70,21 +108,20 @@
             <artifactId>jspecify</artifactId>
             <version>${jspecify.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
+
     </dependencies>
 
+    <!-- ===================== BUILD ===================== -->
     <build>
         <plugins>
 
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
+                    <release>${maven.compiler.release}</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -95,9 +132,10 @@
                 </configuration>
             </plugin>
 
+            <!-- Fat JAR -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
+                <version>${maven.assembly.plugin.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -110,6 +148,7 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
@@ -117,6 +156,8 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
     </build>
+
 </project>
