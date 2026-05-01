@@ -26,7 +26,7 @@ public class LicenseSaveWorker extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() {
-        service.saveLicense(licenseEntity.get(), licenseFolder, licenseName, licenseFormat);
+        licenseEntity.set(service.saveLicense(licenseEntity.get(), licenseFolder, licenseName, licenseFormat));
         return null;
     }
 

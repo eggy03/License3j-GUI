@@ -26,7 +26,7 @@ public class KeyPairSaveWorker extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() {
-        service.saveKeys(licenseKeyPairEntity.get(), keyFormat, privateKeyName, publicKeyName, keyFolder);
+        licenseKeyPairEntity.set(service.saveKeys(licenseKeyPairEntity.get(), keyFormat, privateKeyName, publicKeyName, keyFolder));
         return null;
     }
 
