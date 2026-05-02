@@ -6,7 +6,6 @@ import io.github.eggy03.application.services.LicenseSignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -17,8 +16,8 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
+    private final String signatureDigest;
     private final LicenseSignService service;
-    private final JTextArea textArea;
 
     @Override
     protected String doInBackground() {
@@ -32,7 +31,7 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
         if(!licenseKeyPairEntity.hasPrivateKey())
             return "Private key has not been loaded in memory";
 
-        licenseEntityAtomicReference.set(service.sign(licenseEntity, licenseKeyPairEntity));
+        licenseEntityAtomicReference.set(service.sign(licenseEntity, licenseKeyPairEntity, signatureDigest));
         return "License has been signed. Please save your license and keys before exiting";
     }
 

@@ -25,10 +25,8 @@ import java.util.Objects;
 @SuppressWarnings("java:S1192")
 public class LicenseSignService {
 
-    private static final String DIGEST = "SHA-512";
-
     @NonNull
-    public LicenseEntity sign(@NonNull LicenseEntity licenseEntity, @NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
+    public LicenseEntity sign(@NonNull LicenseEntity licenseEntity, @NonNull LicenseKeyPairEntity licenseKeyPairEntity, @NonNull String signatureDigest) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
         Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
@@ -41,7 +39,7 @@ public class LicenseSignService {
         License copyLicense = License.Create.from(orignalLicense.serialized());
 
         try {
-            copyLicense.sign(privateKey, DIGEST);
+            copyLicense.sign(privateKey, Objects.requireNonNull(signatureDigest, "signatureDigest cannot be null"));
             return new LicenseEntity(copyLicense);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             throw new LicenseSignException("License sign failure", e);
