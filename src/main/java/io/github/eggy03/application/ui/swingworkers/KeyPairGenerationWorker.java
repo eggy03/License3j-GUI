@@ -1,4 +1,4 @@
-package io.github.eggy03.application.workers;
+package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseKeyPairService;
@@ -11,17 +11,17 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
+public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
+    private final String cipher;
+    private final int size;
     private final LicenseKeyPairService service;
 
     @Override
     protected String doInBackground() {
-        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "License keys have not been loaded in memory";
-
-        return service.digestPublicKey(licenseKeyPairEntity.get());
+        licenseKeyPairEntity.set(service.generateKeyPair(cipher, size));
+        return "Keys have been generated in memory.";
     }
 
     @Override
@@ -29,10 +29,10 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Public key digest interrupted", e);
+            log.error("Key generation interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Public key digest failure", e);
+            log.error("Key generation failure", e);
         }
     }
 }

@@ -1,4 +1,4 @@
-package io.github.eggy03.application.workers;
+package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.services.LicenseGenerationService;
@@ -11,18 +11,15 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RequiredArgsConstructor
 @Slf4j
-public class LicenseViewWorker extends SwingWorker<String, Void> {
+public class LicenseGenerationWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntity;
     private final LicenseGenerationService service;
 
     @Override
     protected String doInBackground() {
-
-        if(licenseEntity.get().license()==null)
-            return "No license is loaded in memory";
-
-        return service.viewLicense(licenseEntity.get());
+        licenseEntity.set(service.generateLicense());
+        return "A new license has been generated in memory";
     }
 
     @Override
@@ -30,11 +27,10 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License view interrupted", e);
+            log.error("License generation interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License view failure", e);
+            log.error("License generation failure", e);
         }
-
     }
 }
