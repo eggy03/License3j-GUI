@@ -33,7 +33,8 @@ public class LicenseGenerationService {
         Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
 
         try (LicenseReader licenseReader = new LicenseReader(licenseToLoad, MAX_LICENSE_SIZE)) {
-            return new LicenseEntity(licenseReader.readChecking(licenseFormat), false, false);
+            License license = licenseReader.readChecking(licenseFormat);
+            return new LicenseEntity(license, license.getSignature()!=null, true);
         } catch (IOException e) {
             throw new LicenseReadException("License read failure", e);
         }
