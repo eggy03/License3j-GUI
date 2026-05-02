@@ -20,7 +20,7 @@ import java.awt.Toolkit;
 public class MainUI extends JFrame {
 
     @NonNull
-    private static final Rectangle INIT_RES = new Rectangle(100, 100, 850, 500);
+    private static final Rectangle INIT_RES = new Rectangle(100, 100, 1100, 450);
 
     public MainUI() {
 
@@ -30,14 +30,14 @@ public class MainUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][][grow]"));
+        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
 
-        contentPane.add(new MenuPanel(), "cell 0 0 3 1, grow"); // cell column row width height
-        contentPane.add(new LicensePanel(), "cell 0 1, grow");
-        contentPane.add(new FeaturePanel(), "cell 1 1, grow");
-        contentPane.add(new KeyPanel(), "cell 2 1, grow");
-        contentPane.add(new LogPanel(), "cell 0 2 2 1, grow");
-        contentPane.add(new StatusPanel(), "cell 2 2 1 1, grow");
+        contentPane.add(new MenuPanel().getAsScrollPane(), "cell 0 0 3 1, grow"); // cell column row width height
+        contentPane.add(new LicensePanel().getAsScrollPane(), "cell 0 1, grow");
+        contentPane.add(new FeaturePanel().getAsScrollPane(), "cell 1 1, grow");
+        contentPane.add(new KeyPanel().getAsScrollPane(), "cell 2 1, grow");
+        contentPane.add(new LogPanel().getAsScrollPane(), "cell 0 2 2 1, grow");
+        contentPane.add(new StatusPanel().getAsScrollPane(), "cell 2 2 1 1, grow");
 
         setContentPane(contentPane);
     }

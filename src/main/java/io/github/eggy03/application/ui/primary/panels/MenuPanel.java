@@ -7,8 +7,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import java.awt.GridLayout;
 
+@SuppressWarnings("java:S1192")
 public class MenuPanel extends JPanel {
 
     public MenuPanel() {
@@ -30,5 +32,9 @@ public class MenuPanel extends JPanel {
         helpMenu.add(aboutMenuItem);
 
         return helpMenu;
+    }
+
+    public JScrollPane getAsScrollPane(){
+        return new JScrollPane(this);
     }
 }
