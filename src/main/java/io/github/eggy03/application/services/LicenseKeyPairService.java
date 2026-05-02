@@ -25,7 +25,7 @@ public class LicenseKeyPairService {
     @NonNull
     public LicenseKeyPairEntity generateKeyPair(@NonNull String cipher, int size) {
         try {
-            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(cipher, size), true, false);
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(cipher, size));
         } catch (NoSuchAlgorithmException e) {
             throw new KeyGenerationException("Incompatible Cipher", e);
         }
@@ -57,7 +57,7 @@ public class LicenseKeyPairService {
             PrivateKey privateKey = Objects.requireNonNull(privateKeyPair.getPair().getPrivate(), "privateKey cannot be null");
             PublicKey publicKey = Objects.requireNonNull(publicKeyPair.getPair().getPublic(), "publicKey cannot be null");
 
-            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(publicKey, privateKey, cipher), true, true);
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(publicKey, privateKey, cipher));
 
         } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new KeyReadException("Key read failure", e);
@@ -90,7 +90,7 @@ public class LicenseKeyPairService {
 
         try(KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {
             keyPairWriter.write(copyKeyPair, keyFormat);
-            return new LicenseKeyPairEntity(copyKeyPair, true, true);
+            return new LicenseKeyPairEntity(copyKeyPair);
         } catch (IOException e) {
             throw new KeySaveException("Key save failure", e);
         }

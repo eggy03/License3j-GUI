@@ -23,7 +23,7 @@ public class LicenseGenerationService {
 
     @NonNull
     public LicenseEntity generateLicense() {
-        return new LicenseEntity(new License(), false, false);
+        return new LicenseEntity(new License());
     }
 
     @NonNull
@@ -33,8 +33,7 @@ public class LicenseGenerationService {
         Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
 
         try (LicenseReader licenseReader = new LicenseReader(licenseToLoad, MAX_LICENSE_SIZE)) {
-            License license = licenseReader.readChecking(licenseFormat);
-            return new LicenseEntity(license, license.getSignature()!=null, true);
+            return new LicenseEntity(licenseReader.readChecking(licenseFormat));
         } catch (IOException e) {
             throw new LicenseReadException("License read failure", e);
         }
@@ -52,7 +51,7 @@ public class LicenseGenerationService {
 
         // mutation operation on copied license
         copyLicense.add(feature);
-        return new LicenseEntity(copyLicense, false, false); // adding features should invalidate existing signature and save status
+        return new LicenseEntity(copyLicense);
     }
 
     @NonNull
