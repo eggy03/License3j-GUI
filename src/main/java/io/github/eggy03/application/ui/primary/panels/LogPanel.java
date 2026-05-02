@@ -22,7 +22,7 @@ public class LogPanel extends JPanel {
         logTextArea.setEditable(false);
 
         // add components to the panel
-        add(logTextArea, "cell 0 1 1 1, grow");
+        add(logTextArea, "cell 0 0 1 1, grow");
 
         // add action listeners
         readLogs(logTextArea);
