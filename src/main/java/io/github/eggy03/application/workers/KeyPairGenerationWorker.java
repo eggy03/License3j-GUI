@@ -29,11 +29,10 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Key generation interrupted", e.getCause());
+            log.error("Key generation interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            
-            log.error("Key generation failure", e.getCause());
+            log.error("Key generation failure", e);
         }
     }
 }

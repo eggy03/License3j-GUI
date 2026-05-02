@@ -30,10 +30,10 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License view interrupted", e.getCause());
+            log.error("License view interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License view failure", e.getCause());
+            log.error("License view failure", e);
         }
 
     }

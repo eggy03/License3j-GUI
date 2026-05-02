@@ -32,10 +32,10 @@ public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Key load interrupted", e.getCause());
+            log.error("Key load interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key load failure", e.getCause());
+            log.error("Key load failure", e);
         }
     }
 }

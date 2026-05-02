@@ -36,10 +36,10 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Key save interrupted", e.getCause());
+            log.error("Key save interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key save failure", e.getCause());
+            log.error("Key save failure", e);
         }
     }
 }

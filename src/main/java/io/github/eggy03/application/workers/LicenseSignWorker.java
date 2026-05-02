@@ -38,11 +38,11 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
             log.info(get());
         } catch (InterruptedException e) {
             
-            log.error("License sign interrupted", e.getCause());
+            log.error("License sign interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
             
-            log.error("License sign failure", e.getCause());
+            log.error("License sign failure", e);
         }
     }
 }

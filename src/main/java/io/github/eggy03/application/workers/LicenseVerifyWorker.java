@@ -36,10 +36,10 @@ public class LicenseVerifyWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License verify interrupted", e.getCause());
+            log.error("License verify interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License verify failure", e.getCause());
+            log.error("License verify failure", e);
         }
     }
 }

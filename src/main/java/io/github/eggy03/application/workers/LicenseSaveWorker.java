@@ -36,10 +36,10 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License save interrupted", e.getCause());
+            log.error("License save interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License save failure", e.getCause());
+            log.error("License save failure", e);
         }
     }
 }

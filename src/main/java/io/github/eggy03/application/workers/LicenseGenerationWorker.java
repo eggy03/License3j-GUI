@@ -27,10 +27,10 @@ public class LicenseGenerationWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License generation interrupted", e.getCause());
+            log.error("License generation interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License generation failure", e.getCause());
+            log.error("License generation failure", e);
         }
     }
 }

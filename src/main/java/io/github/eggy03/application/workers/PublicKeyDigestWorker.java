@@ -29,10 +29,10 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Public key digest interrupted", e.getCause());
+            log.error("Public key digest interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Public key digest failure", e.getCause());
+            log.error("Public key digest failure", e);
         }
     }
 }

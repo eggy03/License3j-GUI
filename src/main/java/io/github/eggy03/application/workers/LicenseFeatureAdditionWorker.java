@@ -33,10 +33,10 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License feature add interrupted", e.getCause());
+            log.error("License feature add interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License feature add failure", e.getCause());
+            log.error("License feature add failure", e);
         }
 
     }
