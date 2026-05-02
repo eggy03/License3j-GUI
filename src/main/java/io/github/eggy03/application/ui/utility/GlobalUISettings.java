@@ -18,7 +18,7 @@ import java.util.Objects;
  * initialization to avoid inconsistent UI state.</p>
  */
 @Slf4j
-public class PredefinedUIConstants {
+public class GlobalUISettings {
 
     /**
      * Creates a configuration instance using the default FlatLaf theme:
@@ -27,9 +27,9 @@ public class PredefinedUIConstants {
      * <p>If the Look and Feel cannot be applied, the error is logged and the
      * application continues with the existing/default LAF.</p>
      *
-     * @see #PredefinedUIConstants(String)
+     * @see #GlobalUISettings(String)
      */
-    public PredefinedUIConstants() {
+    public GlobalUISettings() {
         try {
             UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
@@ -47,7 +47,7 @@ public class PredefinedUIConstants {
      * <p>If the Look and Feel cannot be applied, the error is logged and the
      * application continues with the existing/default LAF.</p>
      */
-    public PredefinedUIConstants (@NonNull String lookAndFeel) {
+    public GlobalUISettings(@NonNull String lookAndFeel) {
         try {
             UIManager.setLookAndFeel(Objects.requireNonNull(lookAndFeel, "LAF name cannot be null"));
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
@@ -65,7 +65,7 @@ public class PredefinedUIConstants {
      *
      * @return the current instance for method chaining
      */
-    public PredefinedUIConstants enableRoundComponents() {
+    public GlobalUISettings enableRoundComponents() {
         UIManager.put("Button.arc", 999);
         UIManager.put("Component.arc", 999);
         UIManager.put("ProgressBar.arc", 999);
