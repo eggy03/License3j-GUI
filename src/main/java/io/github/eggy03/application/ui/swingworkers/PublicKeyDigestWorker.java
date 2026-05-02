@@ -2,7 +2,6 @@ package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseKeyPairService;
-import javax0.license3j.crypto.LicenseKeyPair;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
