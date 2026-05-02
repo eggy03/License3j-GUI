@@ -8,11 +8,9 @@ import java.awt.EventQueue;
 public class Start {
 
     void main() {
-
-        new GlobalUISettings("com.formdev.flatlaf.themes.FlatMacDarkLaf")
-                .enableRoundComponents()
-                .enableTabSeparators(true);
-
-        EventQueue.invokeLater(()-> new MainUI().setVisible(true));
+        EventQueue.invokeLater(()-> {
+            new GlobalUISettings().enableRoundComponents().enableTabSeparators(true);
+            new MainUI().setVisible(true);
+        });
     }
 }
