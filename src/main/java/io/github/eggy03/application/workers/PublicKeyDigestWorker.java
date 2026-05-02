@@ -5,7 +5,6 @@ import io.github.eggy03.application.services.LicenseKeyPairService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,12 +15,11 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
     private final LicenseKeyPairService service;
-    private final JTextArea textArea;
 
     @Override
     protected String doInBackground() {
         if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "ERROR: License keys have not been loaded in memory";
+            return "License keys have not been loaded in memory";
 
         return service.digestPublicKey(licenseKeyPairEntity.get());
     }
@@ -29,13 +27,11 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
     @Override
     protected void done() {
         try {
-            textArea.append(get());
+            log.info(get());
         } catch (InterruptedException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Public key digest interrupted", e.getCause());
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Public key digest failure", e.getCause());
         }
     }

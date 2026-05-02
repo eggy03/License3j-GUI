@@ -23,25 +23,25 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
     @Override
     protected String doInBackground() {
         if(licenseEntity.get().license()==null)
-            return "ERROR: No license is loaded in memory";
+            return "No license is loaded in memory";
 
         if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "ERROR: No keys are loaded in memory";
+            return "No keys are loaded in memory";
 
         licenseEntity.set(service.sign(licenseEntity.get(), licenseKeyPairEntity.get()));
-        return "INFO: License has been signed. Please save your license and keys before exiting";
+        return "License has been signed. Please save your license and keys before exiting";
     }
 
     @Override
     protected void done() {
         try {
-            textArea.setText(get());
+            log.info(get());
         } catch (InterruptedException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
+            
             log.error("License sign interrupted", e.getCause());
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
+            
             log.error("License sign failure", e.getCause());
         }
     }

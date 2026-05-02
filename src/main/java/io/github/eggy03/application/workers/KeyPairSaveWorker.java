@@ -6,7 +6,6 @@ import javax0.license3j.io.IOFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -22,27 +21,24 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
     private final String publicKeyName;
     private final IOFormat keyFormat;
     private final LicenseKeyPairService service;
-    private final JTextArea textArea;
 
     @Override
     protected String doInBackground() {
         if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "ERROR: No keys are loaded in memory";
+            return "No keys are loaded in memory";
 
         licenseKeyPairEntity.set(service.saveKeys(licenseKeyPairEntity.get(), keyFormat, privateKeyName, publicKeyName, keyFolder));
-        return "INFO: Keys have been saved.";
+        return "Keys have been saved.";
     }
 
     @Override
     protected void done(){
         try {
-            textArea.setText(get());
+            log.info(get());
         } catch (InterruptedException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Key save interrupted", e.getCause());
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            textArea.append("ERROR: " + e.getCause().getMessage());
             log.error("Key save failure", e.getCause());
         }
     }
