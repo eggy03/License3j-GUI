@@ -1,18 +1,18 @@
 package io.github.eggy03.application.ui.primary;
 
 import app.ui.primary.App;
-import app.ui.secondary.AboutUI;
+import io.github.eggy03.application.ui.primary.panels.FeaturePanel;
+import io.github.eggy03.application.ui.primary.panels.KeyPanel;
+import io.github.eggy03.application.ui.primary.panels.LicensePanel;
+import io.github.eggy03.application.ui.primary.panels.LogPanel;
+import io.github.eggy03.application.ui.primary.panels.MenuPanel;
+import io.github.eggy03.application.ui.primary.panels.StatusPanel;
 import net.miginfocom.swing.MigLayout;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.swing.border.TitledBorder;
-import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 
@@ -32,59 +32,13 @@ public class MainUI extends JFrame {
 
         JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
 
-        contentPane.add(menuPanel(), "cell 0 0 3 1, grow"); // cell column row width height
-        contentPane.add(licensePanel(), "cell 0 1, grow");
-        contentPane.add(featurePanel(), "cell 1 1, grow");
-        contentPane.add(keyPanel(), "cell 2 1, grow");
-        contentPane.add(logPanel(), "cell 0 2 2 1, grow");
-        contentPane.add(statusPanel(), "cell 2 2 1 1, grow");
+        contentPane.add(new MenuPanel(), "cell 0 0 3 1, grow"); // cell column row width height
+        contentPane.add(new LicensePanel(), "cell 0 1, grow");
+        contentPane.add(new FeaturePanel(), "cell 1 1, grow");
+        contentPane.add(new KeyPanel(), "cell 2 1, grow");
+        contentPane.add(new LogPanel(), "cell 0 2 2 1, grow");
+        contentPane.add(new StatusPanel(), "cell 2 2 1 1, grow");
 
         setContentPane(contentPane);
-    }
-
-    private @NonNull JPanel menuPanel() {
-        JPanel menuPanel = new JPanel(new GridLayout(0, 1, 0, 0));
-
-        JMenuBar menuBar = new JMenuBar();
-        menuPanel.add(menuBar);
-
-        JMenu menu = new JMenu("Help");
-        menuBar.add(menu);
-
-        JMenuItem aboutMenuItem = new JMenuItem("About");
-        aboutMenuItem.addActionListener(actionEvent -> new AboutUI());
-        menu.add(aboutMenuItem);
-
-        return menuPanel;
-    }
-
-    private @NonNull JPanel licensePanel() {
-        JPanel licensePanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        licensePanel.setBorder(new TitledBorder("License Functions"));
-        return licensePanel;
-    }
-
-    private @NonNull JPanel featurePanel() {
-        JPanel featurePanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        featurePanel.setBorder(new TitledBorder("License Features"));
-        return featurePanel;
-    }
-
-    private @NonNull JPanel keyPanel() {
-        JPanel keyPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        keyPanel.setBorder(new TitledBorder("Sign Keys"));
-        return keyPanel;
-    }
-
-    private @NonNull JPanel logPanel() {
-        JPanel logPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        logPanel.setBorder(new TitledBorder("Operation Log"));
-        return logPanel;
-    }
-
-    private @NonNull JPanel statusPanel() {
-        JPanel statusPanel = new JPanel(new MigLayout("insets 1", "[grow]", "[grow]"));
-        statusPanel.setBorder(new TitledBorder("Status"));
-        return statusPanel;
     }
 }
