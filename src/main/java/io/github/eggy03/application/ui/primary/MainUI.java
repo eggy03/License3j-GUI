@@ -30,7 +30,7 @@ public class MainUI extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
+        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][][grow]"));
 
         contentPane.add(new MenuPanel(), "cell 0 0 3 1, grow"); // cell column row width height
         contentPane.add(new LicensePanel(), "cell 0 1, grow");
