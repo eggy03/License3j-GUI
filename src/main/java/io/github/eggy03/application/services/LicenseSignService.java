@@ -76,7 +76,7 @@ public class LicenseSignService {
             throw new LicenseSaveException("License name:" + licenseName + "contains invalid characters");
         }
 
-        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
+        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "license cannot be null");
         License copyLicense = License.Create.from(originalLicense.serialized());
 
         try (LicenseWriter licenseWriter = new LicenseWriter(new File(licenseFolder, licenseName))) {

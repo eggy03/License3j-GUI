@@ -46,7 +46,7 @@ public class LicenseGenerationService {
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
         Objects.requireNonNull(feature, "feature cannot be null");
 
-        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
+        License originalLicense = Objects.requireNonNull(licenseEntity.license(), "license cannot be null");
         License copyLicense = License.Create.from(originalLicense.serialized());
 
         // mutation operation on copied license
@@ -58,7 +58,7 @@ public class LicenseGenerationService {
     public String viewLicense(@NonNull LicenseEntity licenseEntity) {
 
         Objects.requireNonNull(licenseEntity, "licenseEntity cannot be null");
-        Objects.requireNonNull(licenseEntity.license(), "licenseEntity.license() cannot be null");
+        Objects.requireNonNull(licenseEntity.license(), "license cannot be null");
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream(); LicenseWriter lw = new LicenseWriter(outputStream)) {
             lw.write(licenseEntity.license(), IOFormat.STRING);
