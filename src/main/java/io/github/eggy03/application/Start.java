@@ -1,4 +1,4 @@
-package io.github.eggy03.application.ui;
+package io.github.eggy03.application;
 
 import io.github.eggy03.application.ui.primary.MainUI;
 import io.github.eggy03.application.ui.utility.GlobalUISettings;
