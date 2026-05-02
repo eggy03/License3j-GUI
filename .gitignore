@@ -224,6 +224,4 @@ buildNumber.properties
 
 # Custom
 /logs
-/Keys
-/Licenses
-.idea/discord.xml
+.idea/
