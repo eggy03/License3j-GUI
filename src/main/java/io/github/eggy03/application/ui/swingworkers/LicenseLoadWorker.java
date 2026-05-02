@@ -17,12 +17,12 @@ public class LicenseLoadWorker extends SwingWorker<String, Void> {
 
     private final File licenseFile;
     private final IOFormat licenseFormat;
-    private final AtomicReference<LicenseEntity> licenseEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final LicenseGenerationService service;
 
     @Override
     protected String doInBackground() {
-        licenseEntity.set(service.loadLicense(licenseFile, licenseFormat));
+        licenseEntityAtomicReference.set(service.loadLicense(licenseFile, licenseFormat));
         return "An existing license has been loaded in memory";
     }
 

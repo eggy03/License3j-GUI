@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseSaveWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final File licenseFolder;
     private final String licenseName;
     private final IOFormat licenseFormat;
@@ -24,10 +24,12 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
     @Override
     protected String doInBackground() {
 
-        if(licenseEntity.get().license()==null)
+        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+
+        if(!licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        licenseEntity.set(service.saveLicense(licenseEntity.get(), licenseFolder, licenseName, licenseFormat));
+        licenseEntityAtomicReference.set(service.saveLicense(licenseEntity, licenseFolder, licenseName, licenseFormat));
         return "License has saved. Don't forget to save your keys before exiting.";
     }
 

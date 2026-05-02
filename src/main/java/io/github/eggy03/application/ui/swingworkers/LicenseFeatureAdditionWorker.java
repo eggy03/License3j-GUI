@@ -14,17 +14,19 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final Feature feature;
     private final LicenseGenerationService service;
 
     @Override
     protected String doInBackground() {
 
-        if(licenseEntity.get().license()==null)
+        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+
+        if(!licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        licenseEntity.set(service.addFeature(licenseEntity.get(), feature));
+        licenseEntityAtomicReference.set(service.addFeature(licenseEntity, feature));
         return "Feature" + feature.name() + "=" + feature.valueString() + "added to the license";
     }
 

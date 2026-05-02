@@ -14,21 +14,24 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseVerifyWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
-    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
+    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final LicenseSignService service;
 
     @Override
     protected String doInBackground() {
 
-        if(licenseEntity.get().license()==null)
+        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+        LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
+
+        if(!licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "No keys are loaded in memory";
+        if(!licenseKeyPairEntity.hasPublicKey())
+            return "Public key has not been loaded in memory";
 
-        boolean verified = service.verify(licenseEntity.get(), licenseKeyPairEntity.get());
-        return verified ? "License signature verified" : "WARN: License signature verification failed. Please sign the license again.";
+        boolean verified = service.verify(licenseEntity, licenseKeyPairEntity);
+        return verified ? "License signature verified" : "License signature verification failed. Please sign the license again.";
     }
 
     @Override

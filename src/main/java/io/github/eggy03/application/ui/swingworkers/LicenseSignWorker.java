@@ -15,20 +15,24 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseSignWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
-    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
+    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final LicenseSignService service;
     private final JTextArea textArea;
 
     @Override
     protected String doInBackground() {
-        if(licenseEntity.get().license()==null)
+
+        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+        LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
+
+        if(!licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "No keys are loaded in memory";
+        if(!licenseKeyPairEntity.hasPrivateKey())
+            return "Private key has not been loaded in memory";
 
-        licenseEntity.set(service.sign(licenseEntity.get(), licenseKeyPairEntity.get()));
+        licenseEntityAtomicReference.set(service.sign(licenseEntity, licenseKeyPairEntity));
         return "License has been signed. Please save your license and keys before exiting";
     }
 

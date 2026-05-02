@@ -13,16 +13,18 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseViewWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final LicenseGenerationService service;
 
     @Override
     protected String doInBackground() {
 
-        if(licenseEntity.get().license()==null)
+        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+
+        if(!licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        return service.viewLicense(licenseEntity.get());
+        return service.viewLicense(licenseEntity);
     }
 
     @Override

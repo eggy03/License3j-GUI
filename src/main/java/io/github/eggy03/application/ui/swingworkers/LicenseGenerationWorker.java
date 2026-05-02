@@ -13,12 +13,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class LicenseGenerationWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseEntity> licenseEntity;
+    private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final LicenseGenerationService service;
 
     @Override
     protected String doInBackground() {
-        licenseEntity.set(service.generateLicense());
+        licenseEntityAtomicReference.set(service.generateLicense());
         return "A new license has been generated in memory";
     }
 

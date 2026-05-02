@@ -13,14 +13,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
+    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final String cipher;
     private final int size;
     private final LicenseKeyPairService service;
 
     @Override
     protected String doInBackground() {
-        licenseKeyPairEntity.set(service.generateKeyPair(cipher, size));
+        licenseKeyPairEntityAtomicReference.set(service.generateKeyPair(cipher, size));
         return "Keys have been generated in memory.";
     }
 

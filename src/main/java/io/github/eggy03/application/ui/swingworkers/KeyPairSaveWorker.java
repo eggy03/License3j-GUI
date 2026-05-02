@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class KeyPairSaveWorker extends SwingWorker<String, Void> {
 
-    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntity;
+    private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final File keyFolder;
     private final String privateKeyName;
     private final String publicKeyName;
@@ -24,10 +24,16 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
 
     @Override
     protected String doInBackground() {
-        if(licenseKeyPairEntity.get().licenseKeyPair()==null)
-            return "No keys are loaded in memory";
 
-        licenseKeyPairEntity.set(service.saveKeys(licenseKeyPairEntity.get(), keyFormat, privateKeyName, publicKeyName, keyFolder));
+        LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
+
+        if(!licenseKeyPairEntity.hasPublicKey())
+            return "Public key has not been loaded in memory";
+
+        if(!licenseKeyPairEntity.hasPrivateKey())
+            return "Private key has not been loaded in memory";
+
+        licenseKeyPairEntityAtomicReference.set(service.saveKeys(licenseKeyPairEntity, keyFormat, privateKeyName, publicKeyName, keyFolder));
         return "Keys have been saved.";
     }
 
