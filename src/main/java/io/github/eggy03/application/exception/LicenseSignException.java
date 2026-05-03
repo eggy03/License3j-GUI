@@ -1,7 +1,14 @@
 package io.github.eggy03.application.exception;
 
-import lombok.experimental.StandardException;
-
-@StandardException
 public class LicenseSignException extends RuntimeException {
+
+    @SuppressWarnings("unused")
+    public LicenseSignException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    @SuppressWarnings("unused")
+    public LicenseSignException(String message) {
+        super(message);
+    }
 }

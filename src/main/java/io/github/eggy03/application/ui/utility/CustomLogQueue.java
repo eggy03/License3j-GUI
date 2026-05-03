@@ -1,6 +1,5 @@
 package io.github.eggy03.application.ui.utility;
 
-import lombok.experimental.UtilityClass;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -10,8 +9,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * This queue is consumed by a JTextArea to display all the logs
  */
-@UtilityClass
 public class CustomLogQueue {
+
+    private CustomLogQueue() {
+        /* This utility class should not be instantiated */
+    }
 
     private static final BlockingQueue<String> BLOCKING_QUEUE = new LinkedBlockingQueue<>(5000);
 

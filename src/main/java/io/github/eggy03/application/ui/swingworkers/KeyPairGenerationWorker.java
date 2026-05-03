@@ -2,25 +2,40 @@ package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseKeyPairService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingWorker;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-@RequiredArgsConstructor
-@Slf4j
 public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
+
+    private static final Logger log = LoggerFactory.getLogger(KeyPairGenerationWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final String cipher;
     private final int size;
     private final LicenseKeyPairService service;
 
+    public KeyPairGenerationWorker(
+            @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
+            @NonNull String cipher,
+            int size,
+            @NonNull LicenseKeyPairService service
+    ) {
+        this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.cipher = Objects.requireNonNull(cipher, "cipher cannot be null");
+        this.size = size;
+        this.service = Objects.requireNonNull(service, "service cannot be null");
+    }
+
     @Override
     protected String doInBackground() {
-        licenseKeyPairEntityAtomicReference.set(service.generateKeyPair(cipher, size));
+        LicenseKeyPairEntity newLicenseKeyPairEntity = service.generateKeyPair(cipher, size);
+        licenseKeyPairEntityAtomicReference.set(newLicenseKeyPairEntity);
         return "Keys have been generated in memory.";
     }
 
@@ -32,7 +47,7 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
             log.error("Key generation interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key generation failure", e);
+            log.error("Key generation failure", e.getCause());
         }
     }
 }

@@ -3,35 +3,50 @@ package io.github.eggy03.application.ui.swingworkers;
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseSignService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingWorker;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-@RequiredArgsConstructor
-@Slf4j
 public class LicenseSignWorker extends SwingWorker<String, Void> {
+
+    private static final Logger log = LoggerFactory.getLogger(LicenseSignWorker.class);
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final String signatureDigest;
     private final LicenseSignService service;
 
+    public LicenseSignWorker(
+            @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
+            @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
+            @NonNull String signatureDigest,
+            @NonNull LicenseSignService service
+    ) {
+        this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
+        this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.signatureDigest = Objects.requireNonNull(signatureDigest, "signatureDigest cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
+    }
+
     @Override
     protected String doInBackground() {
 
-        LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
+        LicenseEntity unsignedLicenseEntity = licenseEntityAtomicReference.get();
         LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
 
-        if(!licenseEntity.hasLicense())
+        if (unsignedLicenseEntity == null || !unsignedLicenseEntity.hasLicense())
             return "No license is loaded in memory";
 
-        if(!licenseKeyPairEntity.hasPrivateKey())
+        if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPrivateKey())
             return "Private key has not been loaded in memory";
 
-        licenseEntityAtomicReference.set(service.sign(licenseEntity, licenseKeyPairEntity, signatureDigest));
+        LicenseEntity signedLicenseEntity = service.sign(unsignedLicenseEntity, licenseKeyPairEntity, signatureDigest);
+        licenseEntityAtomicReference.set(signedLicenseEntity);
         return "License has been signed. Please save your license and keys before exiting";
     }
 
@@ -40,12 +55,12 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            
+
             log.error("License sign interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            
-            log.error("License sign failure", e);
+
+            log.error("License sign failure", e.getCause());
         }
     }
 }

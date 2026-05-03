@@ -1,7 +1,8 @@
 package io.github.eggy03.application.ui.utility;
 
-import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -17,8 +18,9 @@ import java.util.Objects;
  * <p><strong>Threading note:</strong> Should be called on the EDT during application
  * initialization to avoid inconsistent UI state.</p>
  */
-@Slf4j
 public class GlobalUISettings {
+
+    private static final Logger log = LoggerFactory.getLogger(GlobalUISettings.class);
 
     /**
      * Creates a configuration instance using the default FlatLaf theme:
@@ -32,9 +34,8 @@ public class GlobalUISettings {
     public GlobalUISettings() {
         try {
             UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException e) {
-            log.error("LAF cannot be applied", e);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            log.error("Default LAF cannot be applied. Falling back to system default LAF.", e);
         }
     }
 
@@ -50,9 +51,8 @@ public class GlobalUISettings {
     public GlobalUISettings(@NonNull String lookAndFeel) {
         try {
             UIManager.setLookAndFeel(Objects.requireNonNull(lookAndFeel, "LAF name cannot be null"));
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
-                 UnsupportedLookAndFeelException e) {
-            log.error("LAF cannot be applied", e);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            log.error("LAF cannot be applied. Falling back to system default LAF.", e);
         }
     }
 

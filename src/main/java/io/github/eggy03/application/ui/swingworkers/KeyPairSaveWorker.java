@@ -3,17 +3,19 @@ package io.github.eggy03.application.ui.swingworkers;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseKeyPairService;
 import javax0.license3j.io.IOFormat;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingWorker;
 import java.io.File;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-@RequiredArgsConstructor
-@Slf4j
 public class KeyPairSaveWorker extends SwingWorker<String, Void> {
+
+    private static final Logger log = LoggerFactory.getLogger(KeyPairSaveWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final File keyFolder;
@@ -22,30 +24,50 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
     private final IOFormat keyFormat;
     private final LicenseKeyPairService service;
 
+    public KeyPairSaveWorker(
+            @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
+            @NonNull File keyFolder,
+            @NonNull String privateKeyName,
+            @NonNull String publicKeyName,
+            @NonNull IOFormat keyFormat,
+            @NonNull LicenseKeyPairService service
+    ) {
+        this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.keyFolder = Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
+        this.privateKeyName = Objects.requireNonNull(privateKeyName, "privateKeyName cannot be null");
+        this.publicKeyName = Objects.requireNonNull(publicKeyName, "publicKeyName cannot be null");
+        this.keyFormat = Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
+    }
+
     @Override
     protected String doInBackground() {
 
-        LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
+        LicenseKeyPairEntity unsavedLicenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
 
-        if(!licenseKeyPairEntity.hasPublicKey())
+        if (unsavedLicenseKeyPairEntity == null)
+            return "Keys have not been loaded in memory";
+
+        if (!unsavedLicenseKeyPairEntity.hasPublicKey())
             return "Public key has not been loaded in memory";
 
-        if(!licenseKeyPairEntity.hasPrivateKey())
+        if (!unsavedLicenseKeyPairEntity.hasPrivateKey())
             return "Private key has not been loaded in memory";
 
-        licenseKeyPairEntityAtomicReference.set(service.saveKeys(licenseKeyPairEntity, keyFormat, privateKeyName, publicKeyName, keyFolder));
+        LicenseKeyPairEntity savedLicenseKeyPairEntity = service.saveKeys(unsavedLicenseKeyPairEntity, keyFormat, privateKeyName, publicKeyName, keyFolder);
+        licenseKeyPairEntityAtomicReference.set(savedLicenseKeyPairEntity);
         return "Keys have been saved.";
     }
 
     @Override
-    protected void done(){
+    protected void done() {
         try {
             log.info(get());
         } catch (InterruptedException e) {
             log.error("Key save interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key save failure", e);
+            log.error("Key save failure", e.getCause());
         }
     }
 }

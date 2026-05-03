@@ -2,26 +2,36 @@ package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.services.LicenseGenerationService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.SwingWorker;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-@RequiredArgsConstructor
-@Slf4j
 public class LicenseViewWorker extends SwingWorker<String, Void> {
+
+    private static final Logger log = LoggerFactory.getLogger(LicenseViewWorker.class);
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final LicenseGenerationService service;
+
+    public LicenseViewWorker(
+            @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
+            @NonNull LicenseGenerationService service
+    ) {
+        this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
+    }
 
     @Override
     protected String doInBackground() {
 
         LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
 
-        if(!licenseEntity.hasLicense())
+        if (licenseEntity == null || !licenseEntity.hasLicense())
             return "No license is loaded in memory";
 
         return service.viewLicense(licenseEntity);
@@ -35,7 +45,7 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
             log.error("License view interrupted", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License view failure", e);
+            log.error("License view failure", e.getCause());
         }
 
     }
