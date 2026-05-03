@@ -15,7 +15,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -24,31 +24,40 @@ import java.util.concurrent.atomic.AtomicReference;
 @SuppressWarnings("java:S1192")
 public class MainUI extends JFrame {
 
-    @NonNull
-    private static final Rectangle INIT_RES = new Rectangle(100, 100, 1100, 450);
+    public MainUI() {
+        setTitle("License3j-GUI");
+        setLayout(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
+        setBounds(new Rectangle(100, 100, 1100, 450));
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
 
-    public MainUI(
+    public MainUI addComponents(
             @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull final LicenseEntityService licenseEntityService,
             @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
             @NonNull final LicenseKeyPairEntityService licenseKeyPairEntityService
     ) {
 
-        setTitle("License3j-GUI");
-        setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
-        setBounds(INIT_RES);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JScrollPane menuPane = new MenuPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+        JScrollPane licensePane = new LicensePanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+        JScrollPane featurePane = new FeaturePanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+        JScrollPane keyPane = new KeyPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+        JScrollPane logPane = new LogPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
 
-        JPanel contentPane = new JPanel(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
+        JScrollPane statusPane = new StatusPanel()
+                .addComponents()
+                .registerComponentActionListeners(licenseEntityAtomicReference, licenseKeyPairEntityAtomicReference)
+                .getAsScrollPane();
 
-        contentPane.add(new MenuPanel().getAsScrollPane(), "cell 0 0 3 1, grow"); // cell column row width height
-        contentPane.add(new LicensePanel().getAsScrollPane(), "cell 0 1, grow");
-        contentPane.add(new FeaturePanel().getAsScrollPane(), "cell 1 1, grow");
-        contentPane.add(new KeyPanel().getAsScrollPane(), "cell 2 1, grow");
-        contentPane.add(new LogPanel().getAsScrollPane(), "cell 0 2 2 1, grow");
-        contentPane.add(new StatusPanel(licenseEntityAtomicReference, licenseKeyPairEntityAtomicReference).getAsScrollPane(), "cell 2 2 1 1, grow");
+        add(menuPane, "cell 0 0 3 1, grow"); // cell column row width height
+        add(licensePane, "cell 0 1, grow");
+        add(featurePane, "cell 1 1, grow");
+        add(keyPane, "cell 2 1, grow");
+        add(logPane, "cell 0 2 2 1, grow");
+        add(statusPane, "cell 2 2 1 1, grow");
 
-        setContentPane(contentPane);
+        return this;
     }
 }

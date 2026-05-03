@@ -2,44 +2,43 @@ package io.github.eggy03.application.ui.primary.panels;
 
 import io.github.eggy03.application.ui.utility.CustomLogQueue;
 import net.miginfocom.swing.MigLayout;
-import org.jspecify.annotations.NonNull;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 
 @SuppressWarnings("java:S1192")
 public class LogPanel extends JPanel {
 
+    final JTextArea logTextArea = new JTextArea();
+
     public LogPanel() {
         setLayout(new MigLayout("insets 1, fill", "[grow]", "[grow]"));
         setBorder(new TitledBorder("License Operation Logs"));
+    }
 
-        // define components
-        JTextArea logTextArea = new JTextArea();
+    public LogPanel addComponents() {
+        add(logTextArea, "cell 0 0 1 1, grow");
         logTextArea.setEditable(false);
 
-        // add components to the panel
-        add(logTextArea, "cell 0 0 1 1, grow");
-
-        // add action listeners
-        readLogs(logTextArea);
+        return this;
     }
 
-    private void readLogs (@NonNull JTextArea textArea) {
+    public LogPanel registerComponentActionListeners() {
 
-        new Timer(100, actionEvent-> {
-
+        // poll log queue every 100ms and flush log to text area in UI
+        new Timer(100, _ -> {
             String logMessage = CustomLogQueue.dequeueMessage();
-            if (logMessage != null)
-                textArea.append(logMessage);
-
+            if (logMessage != null) SwingUtilities.invokeLater(() -> logTextArea.append(logMessage));
         }).start();
+
+        return this;
     }
 
-    public JScrollPane getAsScrollPane(){
+    public JScrollPane getAsScrollPane() {
         return new JScrollPane(this);
     }
 }

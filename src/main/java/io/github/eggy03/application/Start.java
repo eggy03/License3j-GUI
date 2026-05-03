@@ -22,7 +22,7 @@ public class Start {
 
         EventQueue.invokeLater(()-> {
             new GlobalUISettings().enableRoundComponents().enableTabSeparators(true);
-            new MainUI(
+            new MainUI().addComponents(
                     licenseEntityAtomicReference, licenseEntityService,
                     licenseKeyPairEntityAtomicReference, licenseKeyPairEntityService
             ).setVisible(true);

@@ -16,33 +16,33 @@ import java.util.Vector;
 @SuppressWarnings("java:S1192")
 public class KeyPanel extends JPanel {
 
+    final JLabel cipherLabel = new JLabel("Cipher");
+    final JLabel sizeLabel = new JLabel("Size");
+
+    final JComboBox<String> cipherComboBox = new JComboBox<>(new Vector<>(List.of("RSA/ECB/PKCS1Padding")));
+    final JComboBox<String> sizeComboBox = new JComboBox<>(new Vector<>(List.of("2048", "3072", "4096")));
+
+    final JButton generateKeysButton = new JButton("Generate Keys");
+    final JButton digestPublicKeyButton = new JButton("Digest Public Key");
+
+    final JLabel privateKeyLabel = new JLabel("Private Key Name");
+    final JTextField privateKeyTextField = new JTextField("private.key");
+
+    final JLabel publicKeyLabel = new JLabel("Public Key Name");
+    final JTextField publicKeyTextField = new JTextField("public.key");
+
+    final JButton saveKeysButton = new JButton("Save Keys");
+    final JComboBox<String> keySaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY.name(), IOFormat.BASE64.name())));
+
+    final JButton loadKeysButton = new JButton("Load Keys");
+    final JComboBox<String> keyLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY.name(), IOFormat.BASE64.name())));
+
     public KeyPanel() {
         setLayout(new MigLayout("insets 1, fill", "[][]", "[][][][][][][]"));
         setBorder(new TitledBorder("Sign Keys"));
+    }
 
-        // define components
-        JLabel cipherLabel = new JLabel("Cipher");
-        JLabel sizeLabel = new JLabel("Size");
-
-        JComboBox<String> cipherComboBox = new JComboBox<>(new Vector<>(List.of("RSA/ECB/PKCS1Padding")));
-        JComboBox<String> sizeComboBox = new JComboBox<>(new Vector<>(List.of("2048", "3072", "4096")));
-
-        JButton generateKeysButton = new JButton("Generate Keys");
-        JButton digestPublicKeyButton = new JButton("Digest Public Key");
-
-        JLabel privateKeyLabel = new JLabel("Private Key Name");
-        JTextField privateKeyTextField = new JTextField("private.key");
-
-        JLabel publicKeyLabel = new JLabel("Public Key Name");
-        JTextField publicKeyTextField = new JTextField("public.key");
-
-        JButton saveKeysButton = new JButton("Save Keys");
-        JComboBox<String> keySaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY.name(), IOFormat.BASE64.name())));
-
-        JButton loadKeysButton = new JButton("Load Keys");
-        JComboBox<String> keyLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY.name(), IOFormat.BASE64.name())));
-
-        // add them to the panel
+    public KeyPanel addComponents() {
         add(cipherLabel, "cell 0 0 1 1, growx"); // cell column row width height grow along x-axis
         add(sizeLabel, "cell 1 0 1 1, growx");
 
@@ -64,10 +64,15 @@ public class KeyPanel extends JPanel {
         add(loadKeysButton, "cell 0 6 1 1, growx");
         add(keyLoadFormatComboBox, "cell 1 6 1 1, growx");
 
-        // add action listeners to the components
+        return this;
     }
 
-    public JScrollPane getAsScrollPane(){
+    public KeyPanel registerComponentActionListeners() {
+        // todo
+        return this;
+    }
+
+    public JScrollPane getAsScrollPane() {
         return new JScrollPane(this);
     }
 }

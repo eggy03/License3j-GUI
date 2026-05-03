@@ -1,7 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
 import app.ui.secondary.AboutUI;
-import org.jspecify.annotations.NonNull;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -13,28 +12,36 @@ import java.awt.GridLayout;
 @SuppressWarnings("java:S1192")
 public class MenuPanel extends JPanel {
 
+    // define menu bar
+    final JMenuBar menuBar = new JMenuBar();
+
+    // define menus
+    final JMenu helpMenu = new JMenu("Help");
+
+    // define menu items
+    final JMenuItem aboutMenuItem = new JMenuItem("About");
+
     public MenuPanel() {
         setLayout(new GridLayout(0, 1, 0, 0));
-
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.add(helpMenu());
-
-        add(menuBar);
     }
 
-    @NonNull
-    private JMenu helpMenu() {
-        JMenu helpMenu = new JMenu("Help");
-
-        JMenuItem aboutMenuItem = new JMenuItem("About");
-        aboutMenuItem.addActionListener(actionEvent -> new AboutUI());
-
+    public MenuPanel addComponents() {
+        // order: menu items -> menus -> menu bar -> panel
         helpMenu.add(aboutMenuItem);
 
-        return helpMenu;
+        menuBar.add(helpMenu);
+
+        add(menuBar);
+
+        return this;
     }
 
-    public JScrollPane getAsScrollPane(){
+    public MenuPanel registerComponentActionListeners() {
+        aboutMenuItem.addActionListener(_ -> new AboutUI().setVisible(true));
+        return this;
+    }
+
+    public JScrollPane getAsScrollPane() {
         return new JScrollPane(this);
     }
 }
