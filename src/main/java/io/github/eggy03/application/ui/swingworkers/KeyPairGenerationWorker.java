@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseKeyPairService;
+import io.github.eggy03.application.services.LicenseKeyPairEntityService;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +18,13 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final String cipher;
     private final int size;
-    private final LicenseKeyPairService service;
+    private final LicenseKeyPairEntityService service;
 
     public KeyPairGenerationWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
             @NonNull String cipher,
             int size,
-            @NonNull LicenseKeyPairService service
+            @NonNull LicenseKeyPairEntityService service
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
         this.cipher = Objects.requireNonNull(cipher, "cipher cannot be null");
@@ -34,7 +34,7 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
 
     @Override
     protected String doInBackground() {
-        LicenseKeyPairEntity newLicenseKeyPairEntity = service.generateKeyPair(cipher, size);
+        LicenseKeyPairEntity newLicenseKeyPairEntity = service.generateLicenseKeyPair(cipher, size);
         licenseKeyPairEntityAtomicReference.set(newLicenseKeyPairEntity);
         return "Keys have been generated in memory.";
     }

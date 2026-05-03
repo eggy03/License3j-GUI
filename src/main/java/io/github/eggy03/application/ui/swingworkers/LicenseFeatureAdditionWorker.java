@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
-import io.github.eggy03.application.services.LicenseGenerationService;
+import io.github.eggy03.application.services.LicenseEntityService;
 import javax0.license3j.Feature;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -18,12 +18,12 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final Feature feature;
-    private final LicenseGenerationService service;
+    private final LicenseEntityService service;
 
     public LicenseFeatureAdditionWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull Feature feature,
-            @NonNull LicenseGenerationService service
+            @NonNull LicenseEntityService service
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.feature = Objects.requireNonNull(feature, "feature cannot be null");

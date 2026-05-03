@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseKeyPairService;
+import io.github.eggy03.application.services.LicenseKeyPairEntityService;
 import javax0.license3j.io.IOFormat;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
     private final String privateKeyName;
     private final String publicKeyName;
     private final IOFormat keyFormat;
-    private final LicenseKeyPairService service;
+    private final LicenseKeyPairEntityService service;
 
     public KeyPairSaveWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
@@ -30,7 +30,7 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
             @NonNull String privateKeyName,
             @NonNull String publicKeyName,
             @NonNull IOFormat keyFormat,
-            @NonNull LicenseKeyPairService service
+            @NonNull LicenseKeyPairEntityService service
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
         this.keyFolder = Objects.requireNonNull(keyFolder, "keyFolder cannot be null");

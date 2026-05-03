@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseKeyPairService;
+import io.github.eggy03.application.services.LicenseKeyPairEntityService;
 import javax0.license3j.io.IOFormat;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -21,14 +21,14 @@ public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
     private final File privateKeyFile;
     private final File publicKeyFile;
     private final IOFormat keyFormat;
-    private final LicenseKeyPairService service;
+    private final LicenseKeyPairEntityService service;
 
     public KeyPairLoaderWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
             @NonNull File privateKeyFile,
             @NonNull File publicKeyFile,
             @NonNull IOFormat keyFormat,
-            @NonNull LicenseKeyPairService service
+            @NonNull LicenseKeyPairEntityService service
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
         this.privateKeyFile = Objects.requireNonNull(privateKeyFile, "privateKeyFile cannot be null");
@@ -39,7 +39,7 @@ public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
 
     @Override
     protected String doInBackground() {
-        LicenseKeyPairEntity newLicenseKeyPairEntity = service.loadKeyPair(privateKeyFile, publicKeyFile, keyFormat);
+        LicenseKeyPairEntity newLicenseKeyPairEntity = service.loadLicenseKeyPair(privateKeyFile, publicKeyFile, keyFormat);
         licenseKeyPairEntityAtomicReference.set(newLicenseKeyPairEntity);
         return "Keys have been loaded in memory.";
     }

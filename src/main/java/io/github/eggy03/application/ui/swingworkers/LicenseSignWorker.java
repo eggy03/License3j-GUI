@@ -2,7 +2,7 @@ package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseSignService;
+import io.github.eggy03.application.services.LicenseEntityService;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,13 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
     private final String signatureDigest;
-    private final LicenseSignService service;
+    private final LicenseEntityService service;
 
     public LicenseSignWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
             @NonNull String signatureDigest,
-            @NonNull LicenseSignService service
+            @NonNull LicenseEntityService service
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
@@ -45,7 +45,7 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
         if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPrivateKey())
             return "Private key has not been loaded in memory";
 
-        LicenseEntity signedLicenseEntity = service.sign(unsignedLicenseEntity, licenseKeyPairEntity, signatureDigest);
+        LicenseEntity signedLicenseEntity = service.signLicense(unsignedLicenseEntity, licenseKeyPairEntity, signatureDigest);
         licenseEntityAtomicReference.set(signedLicenseEntity);
         return "License has been signed. Please save your license and keys before exiting";
     }

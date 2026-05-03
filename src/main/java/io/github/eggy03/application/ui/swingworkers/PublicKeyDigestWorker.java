@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseKeyPairService;
+import io.github.eggy03.application.services.LicenseKeyPairEntityService;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +16,11 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(PublicKeyDigestWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
-    private final LicenseKeyPairService service;
+    private final LicenseKeyPairEntityService service;
 
     public PublicKeyDigestWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull LicenseKeyPairService service
+            @NonNull LicenseKeyPairEntityService service
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");

@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
-import io.github.eggy03.application.services.LicenseSignService;
+import io.github.eggy03.application.services.LicenseEntityService;
 import javax0.license3j.io.IOFormat;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
@@ -21,14 +21,14 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
     private final File licenseFolder;
     private final String licenseName;
     private final IOFormat licenseFormat;
-    private final LicenseSignService service;
+    private final LicenseEntityService service;
 
     public LicenseSaveWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull File licenseFolder,
             @NonNull String licenseName,
             @NonNull IOFormat licenseFormat,
-            @NonNull LicenseSignService service
+            @NonNull LicenseEntityService service
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.licenseFolder = Objects.requireNonNull(licenseFolder, "licenseFolder cannot be null");

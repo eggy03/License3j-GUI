@@ -2,7 +2,7 @@ package io.github.eggy03.application.ui.swingworkers;
 
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseSignService;
+import io.github.eggy03.application.services.LicenseEntityService;
 import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +18,12 @@ public class LicenseVerifyWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
-    private final LicenseSignService service;
+    private final LicenseEntityService service;
 
     public LicenseVerifyWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull LicenseSignService service
+            @NonNull LicenseEntityService service
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
@@ -42,8 +42,8 @@ public class LicenseVerifyWorker extends SwingWorker<String, Void> {
         if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPublicKey())
             return "Public key has not been loaded in memory";
 
-        boolean verified = service.verify(licenseEntity, licenseKeyPairEntity);
-        return verified ? "License signature verified" : "License signature verification failed. Please sign the license again.";
+        boolean licenseVerified = service.verifyLicense(licenseEntity, licenseKeyPairEntity);
+        return licenseVerified ? "License signature verified" : "License signature invalid. Please sign the license again.";
     }
 
     @Override
