@@ -1,6 +1,12 @@
 package io.github.eggy03.application.ui.primary.panels;
 
+import io.github.eggy03.application.entity.LicenseEntity;
+import io.github.eggy03.application.services.LicenseEntityService;
+import io.github.eggy03.application.ui.swingworkers.LicenseFeatureAdditionWorker;
+import io.github.eggy03.application.ui.swingworkers.MachineIDWorker;
+import javax0.license3j.Feature;
 import net.miginfocom.swing.MigLayout;
+import org.jspecify.annotations.NonNull;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -11,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("java:S1192")
 public class FeaturePanel extends JPanel {
@@ -28,7 +35,7 @@ public class FeaturePanel extends JPanel {
     final JButton addFeatureButton = new JButton("Add Feature");
 
     final JLabel machineIdLabel = new JLabel("MachineID");
-    final JTextField machineIdTextField = new JTextField("Set this later and make it un-editable");
+    final JTextField machineIdTextField = new JTextField();
     final JButton addMachineIdButton = new JButton("Add MachineID to License");
 
     // constructor for defining layout and metadata
@@ -51,11 +58,36 @@ public class FeaturePanel extends JPanel {
         add(machineIdTextField, "cell 1 4 2 1, growx");
         add(addMachineIdButton, "cell 0 5 3 1, growx");
 
+        machineIdTextField.setEditable(false);
+
         return this;
     }
 
-    public FeaturePanel registerComponentActionListeners() {
-        // todo
+    public FeaturePanel registerComponentActionListeners(
+            @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
+            @NonNull final LicenseEntityService licenseEntityService
+    ) {
+
+        // fetch machineID
+        new MachineIDWorker(machineIdTextField).execute();
+
+        // addFeatureButton action listener
+        addFeatureButton.addActionListener(_ -> {
+
+            String featureName = featureNameTextField.getText();
+            String featureType = String.valueOf(featureTypeComboBox.getSelectedItem());
+            String featureValue = featureValueTextField.getText();
+
+            Feature feature = Feature.Create.from(featureName + ":" +featureType + "=" + featureValue);
+            new LicenseFeatureAdditionWorker(licenseEntityAtomicReference, licenseEntityService, feature).execute();
+        });
+
+        // addMachineIdButton action listener
+        addMachineIdButton.addActionListener(_-> {
+            Feature feature = Feature.Create.from("licenseId:UUID=" + machineIdTextField.getText());
+            new LicenseFeatureAdditionWorker(licenseEntityAtomicReference, licenseEntityService, feature).execute();
+        });
+
         return this;
     }
 

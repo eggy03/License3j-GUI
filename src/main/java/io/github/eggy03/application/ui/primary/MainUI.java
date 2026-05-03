@@ -42,7 +42,12 @@ public class MainUI extends JFrame {
 
         JScrollPane menuPane = new MenuPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
         JScrollPane licensePane = new LicensePanel().addComponents().registerComponentActionListeners().getAsScrollPane();
-        JScrollPane featurePane = new FeaturePanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+
+        JScrollPane featurePane = new FeaturePanel()
+                .addComponents()
+                .registerComponentActionListeners(licenseEntityAtomicReference, licenseEntityService)
+                .getAsScrollPane();
+
         JScrollPane keyPane = new KeyPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
         JScrollPane logPane = new LogPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
 
