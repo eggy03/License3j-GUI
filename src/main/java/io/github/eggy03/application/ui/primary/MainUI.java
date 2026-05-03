@@ -1,6 +1,10 @@
 package io.github.eggy03.application.ui.primary;
 
 import app.ui.primary.App;
+import io.github.eggy03.application.entity.LicenseEntity;
+import io.github.eggy03.application.entity.LicenseKeyPairEntity;
+import io.github.eggy03.application.services.LicenseEntityService;
+import io.github.eggy03.application.services.LicenseKeyPairEntityService;
 import io.github.eggy03.application.ui.primary.panels.FeaturePanel;
 import io.github.eggy03.application.ui.primary.panels.KeyPanel;
 import io.github.eggy03.application.ui.primary.panels.LicensePanel;
@@ -15,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("java:S1192")
 public class MainUI extends JFrame {
@@ -22,7 +27,12 @@ public class MainUI extends JFrame {
     @NonNull
     private static final Rectangle INIT_RES = new Rectangle(100, 100, 1100, 450);
 
-    public MainUI() {
+    public MainUI(
+            @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
+            @NonNull final LicenseEntityService licenseEntityService,
+            @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
+            @NonNull final LicenseKeyPairEntityService licenseKeyPairEntityService
+    ) {
 
         setTitle("License3j-GUI");
         setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
@@ -37,7 +47,7 @@ public class MainUI extends JFrame {
         contentPane.add(new FeaturePanel().getAsScrollPane(), "cell 1 1, grow");
         contentPane.add(new KeyPanel().getAsScrollPane(), "cell 2 1, grow");
         contentPane.add(new LogPanel().getAsScrollPane(), "cell 0 2 2 1, grow");
-        contentPane.add(new StatusPanel().getAsScrollPane(), "cell 2 2 1 1, grow");
+        contentPane.add(new StatusPanel(licenseEntityAtomicReference, licenseKeyPairEntityAtomicReference).getAsScrollPane(), "cell 2 2 1 1, grow");
 
         setContentPane(contentPane);
     }
