@@ -17,17 +17,17 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(LicenseFeatureAdditionWorker.class);
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
-    private final Feature feature;
     private final LicenseEntityService service;
+    private final Feature feature;
 
     public LicenseFeatureAdditionWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull Feature feature,
-            @NonNull LicenseEntityService service
+            @NonNull LicenseEntityService service,
+            @NonNull Feature feature
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
-        this.feature = Objects.requireNonNull(feature, "feature cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.feature = Objects.requireNonNull(feature, "feature cannot be null");
     }
 
     @Override

@@ -16,9 +16,9 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(KeyPairGenerationWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
+    private final LicenseKeyPairEntityService service;
     private final String cipher;
     private final int size;
-    private final LicenseKeyPairEntityService service;
 
     public KeyPairGenerationWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
@@ -27,9 +27,9 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
             @NonNull LicenseKeyPairEntityService service
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
         this.cipher = Objects.requireNonNull(cipher, "cipher cannot be null");
         this.size = size;
-        this.service = Objects.requireNonNull(service, "service cannot be null");
     }
 
     @Override

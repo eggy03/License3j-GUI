@@ -17,21 +17,21 @@ public class LicenseLoadWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseLoadWorker.class);
 
-    private final File licenseFile;
-    private final IOFormat licenseFormat;
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final LicenseEntityService service;
+    private final IOFormat licenseFormat;
+    private final File licenseFile;
 
     public LicenseLoadWorker(
-            @NonNull File licenseFile,
-            @NonNull IOFormat licenseFormat,
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull LicenseEntityService service
+            @NonNull LicenseEntityService service,
+            @NonNull IOFormat licenseFormat,
+            @NonNull File licenseFile
     ) {
-        this.licenseFile = Objects.requireNonNull(licenseFile, "licenseFile cannot be null");
-        this.licenseFormat = Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.licenseFormat = Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
+        this.licenseFile = Objects.requireNonNull(licenseFile, "licenseFile cannot be null");
     }
 
     @Override

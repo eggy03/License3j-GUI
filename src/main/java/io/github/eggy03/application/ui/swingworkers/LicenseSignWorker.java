@@ -18,19 +18,19 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
-    private final String signatureDigest;
     private final LicenseEntityService service;
+    private final String signatureDigest;
 
     public LicenseSignWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull String signatureDigest,
-            @NonNull LicenseEntityService service
+            @NonNull LicenseEntityService service,
+            @NonNull String signatureDigest
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
-        this.signatureDigest = Objects.requireNonNull(signatureDigest, "signatureDigest cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.signatureDigest = Objects.requireNonNull(signatureDigest, "signatureDigest cannot be null");
     }
 
     @Override

@@ -18,23 +18,23 @@ public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(KeyPairLoaderWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
+    private final LicenseKeyPairEntityService service;
+    private final IOFormat keyFormat;
     private final File privateKeyFile;
     private final File publicKeyFile;
-    private final IOFormat keyFormat;
-    private final LicenseKeyPairEntityService service;
 
     public KeyPairLoaderWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull File privateKeyFile,
-            @NonNull File publicKeyFile,
+            @NonNull LicenseKeyPairEntityService service,
             @NonNull IOFormat keyFormat,
-            @NonNull LicenseKeyPairEntityService service
+            @NonNull File privateKeyFile,
+            @NonNull File publicKeyFile
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.keyFormat = Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
         this.privateKeyFile = Objects.requireNonNull(privateKeyFile, "privateKeyFile cannot be null");
         this.publicKeyFile = Objects.requireNonNull(publicKeyFile, "publicKeyFile cannot be null");
-        this.keyFormat = Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
-        this.service = Objects.requireNonNull(service, "service cannot be null");
     }
 
     @Override

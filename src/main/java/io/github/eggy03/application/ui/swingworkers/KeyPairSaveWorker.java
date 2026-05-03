@@ -18,26 +18,26 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(KeyPairSaveWorker.class);
 
     private final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference;
-    private final File keyFolder;
+    private final LicenseKeyPairEntityService service;
     private final String privateKeyName;
     private final String publicKeyName;
     private final IOFormat keyFormat;
-    private final LicenseKeyPairEntityService service;
+    private final File keyFolder;
 
     public KeyPairSaveWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull File keyFolder,
+            @NonNull LicenseKeyPairEntityService service,
             @NonNull String privateKeyName,
             @NonNull String publicKeyName,
             @NonNull IOFormat keyFormat,
-            @NonNull LicenseKeyPairEntityService service
+            @NonNull File keyFolder
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
-        this.keyFolder = Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
         this.privateKeyName = Objects.requireNonNull(privateKeyName, "privateKeyName cannot be null");
         this.publicKeyName = Objects.requireNonNull(publicKeyName, "publicKeyName cannot be null");
         this.keyFormat = Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
-        this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.keyFolder = Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
     }
 
     @Override

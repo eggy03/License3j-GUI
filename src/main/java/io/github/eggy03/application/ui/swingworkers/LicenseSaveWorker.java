@@ -18,23 +18,23 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
     private static final Logger log = LoggerFactory.getLogger(LicenseSaveWorker.class);
 
     private final AtomicReference<LicenseEntity> licenseEntityAtomicReference;
-    private final File licenseFolder;
+    private final LicenseEntityService service;
     private final String licenseName;
     private final IOFormat licenseFormat;
-    private final LicenseEntityService service;
+    private final File licenseFolder;
 
     public LicenseSaveWorker(
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull File licenseFolder,
+            @NonNull LicenseEntityService service,
             @NonNull String licenseName,
             @NonNull IOFormat licenseFormat,
-            @NonNull LicenseEntityService service
+            @NonNull File licenseFolder
     ) {
         this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
-        this.licenseFolder = Objects.requireNonNull(licenseFolder, "licenseFolder cannot be null");
+        this.service = Objects.requireNonNull(service, "service cannot be null");
         this.licenseName = Objects.requireNonNull(licenseName, "licenseName cannot be null");
         this.licenseFormat = Objects.requireNonNull(licenseFormat, "licenseFormat cannot be null");
-        this.service = Objects.requireNonNull(service, "service cannot be null");
+        this.licenseFolder = Objects.requireNonNull(licenseFolder, "licenseFolder cannot be null");
     }
 
     @Override
