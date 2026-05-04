@@ -1,4 +1,4 @@
-package io.github.eggy03.application.ui.utility;
+package io.github.eggy03.application.log;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

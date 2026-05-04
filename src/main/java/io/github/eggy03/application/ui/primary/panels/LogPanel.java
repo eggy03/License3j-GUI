@@ -1,6 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.ui.utility.CustomLogQueue;
+import io.github.eggy03.application.log.CustomLogQueue;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
