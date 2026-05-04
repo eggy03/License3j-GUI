@@ -40,7 +40,8 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
         LicenseEntity newLicenseEntity = service.addFeature(oldlicenseEntity, feature);
         licenseEntityAtomicReference.set(newLicenseEntity);
-        return "Feature " + feature.name() + "=" + feature.valueString() + "added to the license";
+
+        return String.format("Feature: %s=%s has been added to the license", feature.name(), feature.valueString());
     }
 
     @Override
@@ -48,11 +49,12 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License feature add interrupted", e);
+            log.warn("Interrupted while trying to add feature [{}={}] to the license", feature.name(), feature.valueString());
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License feature add failure", e.getCause());
+            log.error("Failed to add the feature [{}={}] to the license", feature.name(), feature.valueString());
+            log.debug("Stack trace for failure", e.getCause());
         }
-
     }
 }

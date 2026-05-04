@@ -56,7 +56,8 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
 
         LicenseKeyPairEntity savedLicenseKeyPairEntity = service.saveKeys(unsavedLicenseKeyPairEntity, keyFormat, privateKeyName, publicKeyName, keyFolder);
         licenseKeyPairEntityAtomicReference.set(savedLicenseKeyPairEntity);
-        return "Keys have been saved.";
+        return String.format("Key pair [privateKeyName=%s, publicKeyName=%s, format=%s] saved to [folder=%s]", privateKeyName, publicKeyName, keyFormat, keyFolder);
+
     }
 
     @Override
@@ -64,10 +65,12 @@ public class KeyPairSaveWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Key save interrupted", e);
+            log.warn("Interrupted while saving key pair [privateKeyName={}, publicKeyName={}, format={}] to [folder={}]", privateKeyName, publicKeyName, keyFormat, keyFolder);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key save failure", e.getCause());
+            log.error("Failed to save key pair [privateKeyName={}, publicKeyName={}, format={}] to [folder={}]", privateKeyName, publicKeyName, keyFormat, keyFolder);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

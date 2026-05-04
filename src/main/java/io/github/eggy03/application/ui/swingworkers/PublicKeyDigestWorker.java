@@ -32,7 +32,7 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
         LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
 
         if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPublicKey())
-            return "Public key has not been loaded in memory";
+            return "Public key not loaded in memory";
 
         return service.digestPublicKey(licenseKeyPairEntity);
     }
@@ -42,10 +42,12 @@ public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("Public key digest interrupted", e);
+            log.warn("Interrupted while displaying public key");
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Public key digest failure", e.getCause());
+            log.error("Failed to display public key");
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

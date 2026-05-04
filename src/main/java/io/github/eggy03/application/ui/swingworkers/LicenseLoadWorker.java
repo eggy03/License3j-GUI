@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LicenseLoadWorker extends SwingWorker<String, Void> {
+public class LicenseLoadWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseLoadWorker.class);
 
@@ -35,21 +35,24 @@ public class LicenseLoadWorker extends SwingWorker<String, Void> {
     }
 
     @Override
-    protected String doInBackground() {
+    protected Void doInBackground() {
         LicenseEntity newLicenseEntity = service.loadLicense(licenseFile, licenseFormat);
         licenseEntityAtomicReference.set(newLicenseEntity);
-        return "An existing license has been loaded in memory";
+        return null;
     }
 
     @Override
     protected void done() {
         try {
-            log.info(get());
+            get();
+            log.info("Existing license loaded to memory from file");
         } catch (InterruptedException e) {
-            log.error("License load interrupted", e);
+            log.warn("Interrupted while loading license from [file={}, format={}]", licenseFile, licenseFormat);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License load failure", e.getCause());
+            log.error("Failed to load license from [file={}, format={}]", licenseFile, licenseFormat);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

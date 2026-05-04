@@ -43,11 +43,12 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
         LicenseEntity unsavedLicenseEntity = licenseEntityAtomicReference.get();
 
         if (unsavedLicenseEntity == null || !unsavedLicenseEntity.hasLicense())
-            return "No license is loaded in memory";
+            return "No license loaded in memory";
 
         LicenseEntity savedLicenseEntity = service.saveLicense(unsavedLicenseEntity, licenseFolder, licenseName, licenseFormat);
         licenseEntityAtomicReference.set(savedLicenseEntity);
-        return "License has been saved. Don't forget to save your keys before exiting.";
+
+        return String.format("License [name=%s, format=%s] saved to [folder=%s]", licenseName, licenseFormat, licenseFolder);
     }
 
     @Override
@@ -55,10 +56,12 @@ public class LicenseSaveWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License save interrupted", e);
+            log.warn("Interrupted while saving license [name={}, format={}] to [folder={}]", licenseName, licenseFormat, licenseFolder);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License save failure", e.getCause());
+            log.error("Failed to save license [name={}, format={}] to [folder={}]", licenseName, licenseFormat, licenseFolder);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

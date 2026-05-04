@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LicenseGenerationWorker extends SwingWorker<String, Void> {
+public class LicenseGenerationWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseGenerationWorker.class);
 
@@ -27,21 +27,24 @@ public class LicenseGenerationWorker extends SwingWorker<String, Void> {
     }
 
     @Override
-    protected String doInBackground() {
+    protected Void doInBackground() {
         LicenseEntity newLicenseEntity = service.generateLicense();
         licenseEntityAtomicReference.set(newLicenseEntity);
-        return "A new license has been generated in memory";
+        return null;
     }
 
     @Override
     protected void done() {
         try {
-            log.info(get());
+            get();
+            log.info("Fresh license generated in memory");
         } catch (InterruptedException e) {
-            log.error("License generation interrupted", e);
+            log.warn("Interrupted while generating license in memory");
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License generation failure", e.getCause());
+            log.error("Failed to generate license in memory");
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

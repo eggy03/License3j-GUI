@@ -22,7 +22,7 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
             @NonNull AtomicReference<LicenseEntity> licenseEntityAtomicReference,
             @NonNull LicenseEntityService service
     ) {
-        this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
+        this.licenseEntityAtomicReference = Objects.requireNonNull(licenseEntityAtomicReference, "licenseEntityAtomicReference cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");
     }
 
@@ -32,7 +32,7 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
         LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
 
         if (licenseEntity == null || !licenseEntity.hasLicense())
-            return "No license is loaded in memory";
+            return "No license loaded in memory";
 
         return service.viewLicense(licenseEntity);
     }
@@ -42,10 +42,12 @@ public class LicenseViewWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License view interrupted", e);
+            log.warn("Interrupted while displaying license content");
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License view failure", e.getCause());
+            log.error("Failed to display license content");
+            log.debug("Stack trace for failure", e.getCause());
         }
 
     }

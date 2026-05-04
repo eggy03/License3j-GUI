@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
+public class KeyPairGenerationWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(KeyPairGenerationWorker.class);
 
@@ -34,21 +34,26 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
     }
 
     @Override
-    protected String doInBackground() {
+    protected Void doInBackground() {
+
         LicenseKeyPairEntity newLicenseKeyPairEntity = service.generateLicenseKeyPair(cipher, size);
         licenseKeyPairEntityAtomicReference.set(newLicenseKeyPairEntity);
-        return "Keys have been generated in memory.";
+
+        return null;
     }
 
     @Override
     protected void done() {
         try {
-            log.info(get());
+            get();
+            log.info("Key pair generation completed successfully using [cipher={}, size={}]", cipher, size);
         } catch (InterruptedException e) {
-            log.error("Key generation interrupted", e);
+            log.warn("Interrupted while generating key pair using [cipher={}, size={}]", cipher, size);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key generation failure", e.getCause());
+            log.error("Failed to generate key pair using [cipher={}, size={}]", cipher, size);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

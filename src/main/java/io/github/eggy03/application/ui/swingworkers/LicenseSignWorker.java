@@ -40,14 +40,14 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
         LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
 
         if (unsignedLicenseEntity == null || !unsignedLicenseEntity.hasLicense())
-            return "No license is loaded in memory";
+            return "No license loaded in memory";
 
         if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPrivateKey())
-            return "Private key has not been loaded in memory";
+            return "Private key not loaded in memory";
 
         LicenseEntity signedLicenseEntity = service.signLicense(unsignedLicenseEntity, licenseKeyPairEntity, signatureDigest);
         licenseEntityAtomicReference.set(signedLicenseEntity);
-        return "License has been signed. Please save your license and keys before exiting";
+        return "License signed successfully";
     }
 
     @Override
@@ -55,12 +55,12 @@ public class LicenseSignWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-
-            log.error("License sign interrupted", e);
+            log.warn("License signing interrupted [digest={}]", signatureDigest);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-
-            log.error("License sign failure", e.getCause());
+            log.error("License signing failed [digest={}]", signatureDigest);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

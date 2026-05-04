@@ -21,6 +21,7 @@ import java.util.Objects;
 public class GlobalUISettings {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalUISettings.class);
+    private final String defaultLAF = "com.formdev.flatlaf.themes.FlatMacDarkLaf";
 
     /**
      * Creates a configuration instance using the default FlatLaf theme:
@@ -33,9 +34,10 @@ public class GlobalUISettings {
      */
     public GlobalUISettings() {
         try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.themes.FlatMacDarkLaf");
+            UIManager.setLookAndFeel(defaultLAF);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            log.error("Default LAF cannot be applied. Falling back to system default LAF.", e);
+            log.error("Default LAF [{}] cannot be applied", defaultLAF);
+            log.debug("Stack trace for LAF failure", e);
         }
     }
 
@@ -52,7 +54,8 @@ public class GlobalUISettings {
         try {
             UIManager.setLookAndFeel(Objects.requireNonNull(lookAndFeel, "LAF name cannot be null"));
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            log.error("LAF cannot be applied. Falling back to system default LAF.", e);
+            log.error("LAF [{}] cannot be applied", lookAndFeel);
+            log.debug("Stack trace for LAF failure", e);
         }
     }
 

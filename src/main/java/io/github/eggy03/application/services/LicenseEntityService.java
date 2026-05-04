@@ -28,6 +28,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Objects;
 
+// todo improve exception messages
 @SuppressWarnings("java:S1192")
 public class LicenseEntityService {
 

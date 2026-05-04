@@ -19,7 +19,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
-
+// todo improve exception messages
 public class LicenseKeyPairEntityService {
 
     @NonNull

@@ -30,10 +30,12 @@ public class MachineIDWorker extends SwingWorker<String, Void> {
         try {
             machineIdTextField.setText(get());
         } catch (InterruptedException e) {
-            log.warn("MachineID fetching process was interrupted", e);
+            log.warn("Interrupted while fetching MachineID");
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.warn("MachineID fetching failed", e);
+            log.warn("Failed to fetch MachineID");
+            log.debug("Stack trace for failure", e);
         }
     }
 }

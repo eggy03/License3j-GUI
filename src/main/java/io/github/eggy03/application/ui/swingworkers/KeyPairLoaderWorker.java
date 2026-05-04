@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
+public class KeyPairLoaderWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(KeyPairLoaderWorker.class);
 
@@ -38,21 +38,25 @@ public class KeyPairLoaderWorker extends SwingWorker<String, Void> {
     }
 
     @Override
-    protected String doInBackground() {
+    protected Void doInBackground() {
+
         LicenseKeyPairEntity newLicenseKeyPairEntity = service.loadLicenseKeyPair(privateKeyFile, publicKeyFile, keyFormat);
         licenseKeyPairEntityAtomicReference.set(newLicenseKeyPairEntity);
-        return "Keys have been loaded in memory.";
+        return null;
     }
 
     @Override
     protected void done() {
         try {
-            log.info(get());
+            get();
+            log.info("Key pair [privateKeyFile={}, publicKeyFile={}, format={}] loaded successfully", privateKeyFile, publicKeyFile, keyFormat);
         } catch (InterruptedException e) {
-            log.error("Key load interrupted", e);
+            log.warn("Interrupted while loading key pair from [privateKeyFile={}, publicKeyFile={}, format={}]", privateKeyFile, publicKeyFile, keyFormat);
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("Key load failure", e.getCause());
+            log.error("Failed to load key pair from [privateKeyFile={}, publicKeyFile={}, format={}]", privateKeyFile, publicKeyFile, keyFormat);
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }

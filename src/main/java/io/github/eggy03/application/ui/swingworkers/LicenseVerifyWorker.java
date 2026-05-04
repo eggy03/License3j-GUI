@@ -37,13 +37,13 @@ public class LicenseVerifyWorker extends SwingWorker<String, Void> {
         LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
 
         if (licenseEntity == null || !licenseEntity.hasLicense())
-            return "No license is loaded in memory";
+            return "No license loaded in memory";
 
         if (licenseKeyPairEntity == null || !licenseKeyPairEntity.hasPublicKey())
-            return "Public key has not been loaded in memory";
+            return "Public key not loaded in memory";
 
         boolean licenseVerified = service.verifyLicense(licenseEntity, licenseKeyPairEntity);
-        return licenseVerified ? "License signature verified" : "License signature invalid. Please sign the license again.";
+        return licenseVerified ? "License signature verified" : "License signature invalid";
     }
 
     @Override
@@ -51,10 +51,12 @@ public class LicenseVerifyWorker extends SwingWorker<String, Void> {
         try {
             log.info(get());
         } catch (InterruptedException e) {
-            log.error("License verify interrupted", e);
+            log.warn("Interrupted while verifying license signature");
+            log.debug("Stack trace for interruption", e);
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {
-            log.error("License verify failure", e.getCause());
+            log.error("Failed to verify license signature");
+            log.debug("Stack trace for failure", e.getCause());
         }
     }
 }
