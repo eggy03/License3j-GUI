@@ -19,6 +19,7 @@ public class Start {
     void main() {
 
         try {
+            // todo might check any DI frameworks for scoping
             final AtomicReference<LicenseEntity> licenseEntityAtomicReference = new AtomicReference<>();
             final LicenseEntityService licenseEntityService = new LicenseEntityService();
 
