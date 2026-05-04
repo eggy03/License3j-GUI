@@ -22,9 +22,10 @@ public class KeyPairGenerationWorker extends SwingWorker<String, Void> {
 
     public KeyPairGenerationWorker(
             @NonNull AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
+            @NonNull LicenseKeyPairEntityService service,
             @NonNull String cipher,
-            int size,
-            @NonNull LicenseKeyPairEntityService service
+            int size
+
     ) {
         this.licenseKeyPairEntityAtomicReference = Objects.requireNonNull(licenseKeyPairEntityAtomicReference, "licenseKeyPairEntityAtomicReference cannot be null");
         this.service = Objects.requireNonNull(service, "service cannot be null");
