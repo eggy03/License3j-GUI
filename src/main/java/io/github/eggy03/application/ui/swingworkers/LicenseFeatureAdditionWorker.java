@@ -40,7 +40,7 @@ public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
         LicenseEntity newLicenseEntity = service.addFeature(oldlicenseEntity, feature);
         licenseEntityAtomicReference.set(newLicenseEntity);
-        return "Feature" + feature.name() + "=" + feature.valueString() + "added to the license";
+        return "Feature " + feature.name() + "=" + feature.valueString() + "added to the license";
     }
 
     @Override
