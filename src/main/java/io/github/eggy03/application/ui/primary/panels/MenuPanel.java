@@ -12,20 +12,22 @@ import java.awt.GridLayout;
 @SuppressWarnings("java:S1192")
 public class MenuPanel extends JPanel {
 
+    // Non-Injectable UI Components
     // define menu bar
-    final JMenuBar menuBar = new JMenuBar();
+    private final JMenuBar menuBar = new JMenuBar();
 
     // define menus
-    final JMenu helpMenu = new JMenu("Help");
+    private final JMenu helpMenu = new JMenu("Help");
 
     // define menu items
-    final JMenuItem aboutMenuItem = new JMenuItem("About");
+    private final JMenuItem aboutMenuItem = new JMenuItem("About");
 
-    public MenuPanel() {
+    public MenuPanel initUI() {
         setLayout(new GridLayout(0, 1, 0, 0));
+        return this;
     }
 
-    public MenuPanel addComponents() {
+    public MenuPanel initComponents() {
         // order: menu items -> menus -> menu bar -> panel
         helpMenu.add(aboutMenuItem);
 
@@ -36,7 +38,7 @@ public class MenuPanel extends JPanel {
         return this;
     }
 
-    public MenuPanel registerComponentActionListeners() {
+    public MenuPanel initListeners() {
         aboutMenuItem.addActionListener(_ -> new AboutUI().setVisible(true));
         return this;
     }

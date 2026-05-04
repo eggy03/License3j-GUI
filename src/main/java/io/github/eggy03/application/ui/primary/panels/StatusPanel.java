@@ -1,5 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
+import io.github.eggy03.application.component.EntityRuntimeComponent;
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import net.miginfocom.swing.MigLayout;
@@ -12,29 +13,46 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Objects;
 
 @SuppressWarnings("java:S1192")
 public class StatusPanel extends JPanel {
 
-    final JLabel licenseLoadedStatusLabel = new JLabel("License");
-    final JTextField licenseLoadedStatusTextField = new JTextField();
+    // Non-Injectable UI Components
+    private final JLabel licenseLoadedStatusLabel = new JLabel("License");
+    private final JTextField licenseLoadedStatusTextField = new JTextField();
 
-    final JLabel licenseSignedStatusLabel = new JLabel("License Signature");
-    final JTextField licenseSignedStatusTextField = new JTextField();
+    private final JLabel licenseSignedStatusLabel = new JLabel("License Signature");
+    private final JTextField licenseSignedStatusTextField = new JTextField();
 
-    final JLabel privateKeyLoadedStatusLabel = new JLabel("Private Key");
-    final JTextField privateKeyLoadedStatusTextField = new JTextField();
+    private final JLabel privateKeyLoadedStatusLabel = new JLabel("Private Key");
+    private final JTextField privateKeyLoadedStatusTextField = new JTextField();
 
-    final JLabel publicKeyLoadedStatusLabel = new JLabel("Public Key");
-    final JTextField publicKeyLoadedStatusTextField = new JTextField();
+    private final JLabel publicKeyLoadedStatusLabel = new JLabel("Public Key");
+    private final JTextField publicKeyLoadedStatusTextField = new JTextField();
 
-    public StatusPanel() {
-        setLayout(new MigLayout("insets 1, fillx", "[][]", "[][][][]"));
-        setBorder(new TitledBorder("License Status"));
+    // Injectable Non-UI Components
+    // non-serializable
+    @SuppressWarnings("java:S1948")
+    private final EntityRuntimeComponent entityRuntimeComponent;
+
+    public StatusPanel(@NonNull EntityRuntimeComponent entityRuntimeComponent) {
+        this.entityRuntimeComponent = Objects.requireNonNull(entityRuntimeComponent);
     }
 
-    public StatusPanel addComponents() {
+    public StatusPanel initUI() {
+        setLayout(new MigLayout("insets 1, fillx", "[][]", "[][][][]"));
+        setBorder(new TitledBorder("License Status"));
+
+        licenseLoadedStatusTextField.setEditable(false);
+        licenseSignedStatusTextField.setEditable(false);
+        privateKeyLoadedStatusTextField.setEditable(false);
+        publicKeyLoadedStatusTextField.setEditable(false);
+
+        return this;
+    }
+
+    public StatusPanel initComponents() {
         add(licenseLoadedStatusLabel, "cell 0 0 1 1, grow");
         add(licenseLoadedStatusTextField, "cell 1 0 1 1, grow");
 
@@ -47,23 +65,15 @@ public class StatusPanel extends JPanel {
         add(publicKeyLoadedStatusLabel, "cell 0 3 1 1, grow");
         add(publicKeyLoadedStatusTextField, "cell 1 3 1 1, grow");
 
-        licenseLoadedStatusTextField.setEditable(false);
-        licenseSignedStatusTextField.setEditable(false);
-        privateKeyLoadedStatusTextField.setEditable(false);
-        publicKeyLoadedStatusTextField.setEditable(false);
-
         return this;
     }
 
-    public StatusPanel registerComponentActionListeners(
-            @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference
-    ) {
+    public StatusPanel initListeners() {
 
         new Timer(100, _ -> {
 
-            LicenseEntity licenseEntity = licenseEntityAtomicReference.get();
-            LicenseKeyPairEntity licenseKeyPairEntity = licenseKeyPairEntityAtomicReference.get();
+            LicenseEntity licenseEntity = entityRuntimeComponent.licenseEntityRef().get();
+            LicenseKeyPairEntity licenseKeyPairEntity = entityRuntimeComponent.licenseKeyPairRef().get();
 
             String licenseLoaded = licenseEntity != null && licenseEntity.hasLicense() ? "Loaded" : "Unloaded";
             String licenseSigned = licenseEntity != null && licenseEntity.hasSignature() ? "Signed" : "Unsigned";

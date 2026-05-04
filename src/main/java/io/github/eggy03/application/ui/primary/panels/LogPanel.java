@@ -13,21 +13,25 @@ import javax.swing.border.TitledBorder;
 @SuppressWarnings("java:S1192")
 public class LogPanel extends JPanel {
 
-    final JTextArea logTextArea = new JTextArea();
+    // Non-Injectable UI Components
+    private final JTextArea logTextArea = new JTextArea();
 
-    public LogPanel() {
+    public LogPanel initUI() {
         setLayout(new MigLayout("insets 1, fill", "[grow]", "[grow]"));
         setBorder(new TitledBorder("License Operation Logs"));
-    }
 
-    public LogPanel addComponents() {
-        add(logTextArea, "cell 0 0 1 1, grow");
         logTextArea.setEditable(false);
 
         return this;
     }
 
-    public LogPanel registerComponentActionListeners() {
+    public LogPanel initComponents() {
+        add(new JScrollPane(logTextArea), "cell 0 0 1 1, grow");
+
+        return this;
+    }
+
+    public LogPanel initListeners() {
 
         // poll log queue every 100ms and flush log to text area in UI
         new Timer(100, _ -> {

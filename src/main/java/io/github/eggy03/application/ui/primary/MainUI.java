@@ -1,9 +1,7 @@
 package io.github.eggy03.application.ui.primary;
 
-import io.github.eggy03.application.entity.LicenseEntity;
-import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseEntityService;
-import io.github.eggy03.application.services.LicenseKeyPairEntityService;
+import io.github.eggy03.application.component.EntityRuntimeComponent;
+import io.github.eggy03.application.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.primary.panels.FeaturePanel;
 import io.github.eggy03.application.ui.primary.panels.KeyPanel;
 import io.github.eggy03.application.ui.primary.panels.LicensePanel;
@@ -18,49 +16,71 @@ import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Objects;
 
 @SuppressWarnings("java:S1192")
 public class MainUI extends JFrame {
 
-    public MainUI() {
+    // Injectable Non-UI components
+    // non-serializable
+    @SuppressWarnings("java:S1948")
+    private final EntityRuntimeComponent entityRuntimeComponent;
+
+    @SuppressWarnings("java:S1948")
+    private final ServiceRuntimeComponent serviceRuntimeComponent;
+
+    public MainUI(@NonNull EntityRuntimeComponent entityRuntimeComponent, @NonNull ServiceRuntimeComponent serviceRuntimeComponent) {
+        this.entityRuntimeComponent = Objects.requireNonNull(entityRuntimeComponent);
+        this.serviceRuntimeComponent = Objects.requireNonNull(serviceRuntimeComponent);
+    }
+
+    public MainUI initUI() {
         setTitle("License3j-GUI");
         setLayout(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
         setIconImage(Toolkit.getDefaultToolkit().getImage(MainUI.class.getResource("/icons/logo.png")));
         setBounds(new Rectangle(100, 100, 1100, 450));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        return this;
     }
 
-    public MainUI addComponents(
-            @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull final LicenseEntityService licenseEntityService,
-            @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull final LicenseKeyPairEntityService licenseKeyPairEntityService
-    ) {
+    public MainUI initComponents() {
 
-        JScrollPane menuPane = new MenuPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
-
-        JScrollPane licensePane = new LicensePanel()
-                .addComponents()
-                .registerComponentActionListeners(licenseEntityAtomicReference, licenseKeyPairEntityAtomicReference, licenseEntityService)
+        JScrollPane menuPane = new MenuPanel()
+                .initUI()
+                .initComponents()
+                .initListeners()
                 .getAsScrollPane();
 
-        JScrollPane featurePane = new FeaturePanel()
-                .addComponents()
-                .registerComponentActionListeners(licenseEntityAtomicReference, licenseEntityService)
+        JScrollPane licensePane = new LicensePanel(entityRuntimeComponent, serviceRuntimeComponent)
+                .initUI()
+                .initComponents()
+                .initListeners()
                 .getAsScrollPane();
 
-        JScrollPane keyPane = new KeyPanel()
+        JScrollPane featurePane = new FeaturePanel(entityRuntimeComponent, serviceRuntimeComponent)
+                .initUI()
                 .addComponents()
-                .registerComponentActionListeners(licenseKeyPairEntityAtomicReference, licenseKeyPairEntityService)
+                .initListeners()
                 .getAsScrollPane();
 
-        JScrollPane logPane = new LogPanel().addComponents().registerComponentActionListeners().getAsScrollPane();
+        JScrollPane keyPane = new KeyPanel(entityRuntimeComponent, serviceRuntimeComponent)
+                .initUI()
+                .initComponents()
+                .initListeners()
+                .getAsScrollPane();
 
-        JScrollPane statusPane = new StatusPanel()
-                .addComponents()
-                .registerComponentActionListeners(licenseEntityAtomicReference, licenseKeyPairEntityAtomicReference)
+        JScrollPane logPane = new LogPanel()
+                .initUI()
+                .initComponents()
+                .initListeners()
+                .getAsScrollPane();
+
+        JScrollPane statusPane = new StatusPanel(entityRuntimeComponent)
+                .initUI()
+                .initComponents()
+                .initListeners()
                 .getAsScrollPane();
 
         add(menuPane, "cell 0 0 3 1, grow"); // cell column row width height

@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseKeyPairEntityService;
+import io.github.eggy03.application.component.EntityRuntimeComponent;
+import io.github.eggy03.application.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.swingworkers.KeyPairGenerationWorker;
 import io.github.eggy03.application.ui.swingworkers.KeyPairLoaderWorker;
 import io.github.eggy03.application.ui.swingworkers.KeyPairSaveWorker;
@@ -21,38 +21,53 @@ import javax.swing.border.TitledBorder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("java:S1192")
 public class KeyPanel extends JPanel {
 
-    final JLabel cipherLabel = new JLabel("Cipher");
-    final JLabel sizeLabel = new JLabel("Size");
+    // Non-Injectable UI Components
+    private final JLabel cipherLabel = new JLabel("Cipher");
+    private final JLabel sizeLabel = new JLabel("Size");
 
-    final JComboBox<@NonNull String> cipherComboBox = new JComboBox<>(new Vector<>(List.of("RSA")));
-    final JComboBox<@NonNull Integer> sizeComboBox = new JComboBox<>(new Vector<>(List.of(2048, 3072, 4096)));
+    private final JComboBox<@NonNull String> cipherComboBox = new JComboBox<>(new Vector<>(List.of("RSA")));
+    private final JComboBox<@NonNull Integer> sizeComboBox = new JComboBox<>(new Vector<>(List.of(2048, 3072, 4096)));
 
-    final JButton generateKeysButton = new JButton("Generate Keys");
-    final JButton digestPublicKeyButton = new JButton("Digest Public Key");
+    private final JButton generateKeysButton = new JButton("Generate Keys");
+    private final JButton digestPublicKeyButton = new JButton("Digest Public Key");
 
-    final JLabel privateKeyLabel = new JLabel("Private Key Name");
-    final JTextField privateKeyTextField = new JTextField();
+    private final JLabel privateKeyLabel = new JLabel("Private Key Name");
+    private final JTextField privateKeyTextField = new JTextField();
 
-    final JLabel publicKeyLabel = new JLabel("Public Key Name");
-    final JTextField publicKeyTextField = new JTextField();
+    private final JLabel publicKeyLabel = new JLabel("Public Key Name");
+    private final JTextField publicKeyTextField = new JTextField();
 
-    final JButton saveKeysButton = new JButton("Save Keys");
-    final JComboBox<@NonNull IOFormat> keySaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64)));
+    private final JButton saveKeysButton = new JButton("Save Keys");
+    private final JComboBox<@NonNull IOFormat> keySaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64)));
 
-    final JButton loadKeysButton = new JButton("Load Keys");
-    final JComboBox<@NonNull IOFormat> keyLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64)));
+    private final JButton loadKeysButton = new JButton("Load Keys");
+    private final JComboBox<@NonNull IOFormat> keyLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64)));
 
-    public KeyPanel() {
-        setLayout(new MigLayout("insets 1, fill", "[][]", "[][][][][][][]"));
-        setBorder(new TitledBorder("Sign Keys"));
+    // Injectable Non-UI Components
+    // non-serializable
+    @SuppressWarnings("java:S1948")
+    private final EntityRuntimeComponent entityRuntimeComponent;
+
+    @SuppressWarnings("java:S1948")
+    private final ServiceRuntimeComponent serviceRuntimeComponent;
+
+    public KeyPanel(@NonNull EntityRuntimeComponent entityRuntimeComponent, @NonNull ServiceRuntimeComponent serviceRuntimeComponent) {
+        this.entityRuntimeComponent = Objects.requireNonNull(entityRuntimeComponent);
+        this.serviceRuntimeComponent = Objects.requireNonNull(serviceRuntimeComponent);
     }
 
-    public KeyPanel addComponents() {
+    public KeyPanel initUI() {
+        setLayout(new MigLayout("insets 1, fill", "[][]", "[][][][][][][]"));
+        setBorder(new TitledBorder("Sign Keys"));
+
+        return this;
+    }
+
+    public KeyPanel initComponents() {
         add(cipherLabel, "cell 0 0 1 1, growx"); // cell column row width height grow along x-axis
         add(sizeLabel, "cell 1 0 1 1, growx");
 
@@ -77,15 +92,12 @@ public class KeyPanel extends JPanel {
         return this;
     }
 
-    public KeyPanel registerComponentActionListeners(
-            @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull final LicenseKeyPairEntityService licenseKeyPairEntityService
-    ) {
+    public KeyPanel initListeners() {
 
         generateKeysButton.addActionListener(_ ->
                 new KeyPairGenerationWorker(
-                        licenseKeyPairEntityAtomicReference,
-                        licenseKeyPairEntityService,
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseKeyPairEntityServiceRef(),
                         String.valueOf(cipherComboBox.getSelectedItem()),
                         (Integer) Objects.requireNonNull(sizeComboBox.getSelectedItem())
                 ).execute()
@@ -93,8 +105,8 @@ public class KeyPanel extends JPanel {
 
         digestPublicKeyButton.addActionListener(_ ->
                 new PublicKeyDigestWorker(
-                        licenseKeyPairEntityAtomicReference,
-                        licenseKeyPairEntityService
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseKeyPairEntityServiceRef()
                 ).execute()
         );
 
@@ -108,8 +120,8 @@ public class KeyPanel extends JPanel {
 
             if (option == JFileChooser.APPROVE_OPTION) {
                 new KeyPairSaveWorker(
-                        licenseKeyPairEntityAtomicReference,
-                        licenseKeyPairEntityService,
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseKeyPairEntityServiceRef(),
                         privateKeyTextField.getText(),
                         publicKeyTextField.getText(),
                         (IOFormat) Objects.requireNonNull(keySaveFormatComboBox.getSelectedItem()),
@@ -134,8 +146,8 @@ public class KeyPanel extends JPanel {
 
             if (privateKeySelector.showOpenDialog(this) == JFileChooser.APPROVE_OPTION && publicKeySelector.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 new KeyPairLoaderWorker(
-                        licenseKeyPairEntityAtomicReference,
-                        licenseKeyPairEntityService,
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseKeyPairEntityServiceRef(),
                         (IOFormat) Objects.requireNonNull(keyLoadFormatComboBox.getSelectedItem()),
                         privateKeySelector.getSelectedFile(),
                         publicKeySelector.getSelectedFile()

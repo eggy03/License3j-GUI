@@ -1,8 +1,7 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.entity.LicenseEntity;
-import io.github.eggy03.application.entity.LicenseKeyPairEntity;
-import io.github.eggy03.application.services.LicenseEntityService;
+import io.github.eggy03.application.component.EntityRuntimeComponent;
+import io.github.eggy03.application.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.swingworkers.LicenseGenerationWorker;
 import io.github.eggy03.application.ui.swingworkers.LicenseLoadWorker;
 import io.github.eggy03.application.ui.swingworkers.LicenseSaveWorker;
@@ -23,33 +22,48 @@ import javax.swing.border.TitledBorder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings("java:S1192")
 public class LicensePanel extends JPanel {
 
-    final JButton newLicenseButton = new JButton("New License");
+    // Non-Injectable UI Components
+    private final JButton newLicenseButton = new JButton("New License");
 
-    final JButton loadLicenseButton = new JButton("Load License");
-    final JComboBox<IOFormat> licenseLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING)));
+    private final JButton loadLicenseButton = new JButton("Load License");
+    private final JComboBox<IOFormat> licenseLoadFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING)));
 
-    final JButton displayLicenseButton = new JButton("Display License");
+    private final JButton displayLicenseButton = new JButton("Display License");
 
-    final JButton signLicenseButton = new JButton("Sign License");
-    final JComboBox<String> signatureDigestComboBox = new JComboBox<>(new Vector<>(List.of("SHA-512")));
+    private final JButton signLicenseButton = new JButton("Sign License");
+    private final JComboBox<String> signatureDigestComboBox = new JComboBox<>(new Vector<>(List.of("SHA-512")));
 
-    final JButton verifyLicenseButton = new JButton("Verify License");
+    private final JButton verifyLicenseButton = new JButton("Verify License");
 
-    final JButton saveLicenseButton = new JButton("Save License");
-    final JComboBox<IOFormat> licenseSaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING)));
-    final JTextField licenseSaveNameTextField = new JTextField();
+    private final JButton saveLicenseButton = new JButton("Save License");
+    private final JComboBox<IOFormat> licenseSaveFormatComboBox = new JComboBox<>(new Vector<>(List.of(IOFormat.BINARY, IOFormat.BASE64, IOFormat.STRING)));
+    private final JTextField licenseSaveNameTextField = new JTextField();
 
-    public LicensePanel() {
-        setLayout(new MigLayout("insets 1, fill", "[][][]", "[][][][][][]"));
-        setBorder(new TitledBorder("License Functions"));
+    // Injectable Non-UI Components
+    // non-serializable
+    @SuppressWarnings("java:S1948")
+    private final EntityRuntimeComponent entityRuntimeComponent;
+
+    @SuppressWarnings("java:S1948")
+    private final ServiceRuntimeComponent serviceRuntimeComponent;
+
+    public LicensePanel(@NonNull EntityRuntimeComponent entityRuntimeComponent, @NonNull ServiceRuntimeComponent serviceRuntimeComponent) {
+        this.entityRuntimeComponent = Objects.requireNonNull(entityRuntimeComponent);
+        this.serviceRuntimeComponent = Objects.requireNonNull(serviceRuntimeComponent);
     }
 
-    public LicensePanel addComponents() {
+    public LicensePanel initUI() {
+        setLayout(new MigLayout("insets 1, fill", "[][][]", "[][][][][][]"));
+        setBorder(new TitledBorder("License Functions"));
+
+        return this;
+    }
+
+    public LicensePanel initComponents() {
 
         add(newLicenseButton, "cell 0 0 3 1, growx"); // cell column row width height grow along x-axis
         add(loadLicenseButton, "cell 0 1 2 1, growx");
@@ -65,16 +79,12 @@ public class LicensePanel extends JPanel {
         return this;
     }
 
-    public LicensePanel registerComponentActionListeners(
-            @NonNull final AtomicReference<LicenseEntity> licenseEntityAtomicReference,
-            @NonNull final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference,
-            @NonNull final LicenseEntityService licenseEntityService
-    ) {
+    public LicensePanel initListeners() {
 
         newLicenseButton.addActionListener(_ ->
                 new LicenseGenerationWorker(
-                        licenseEntityAtomicReference,
-                        licenseEntityService
+                        entityRuntimeComponent.licenseEntityRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef()
                 ).execute()
         );
 
@@ -88,8 +98,8 @@ public class LicensePanel extends JPanel {
 
             if (option == JFileChooser.APPROVE_OPTION) {
                 new LicenseLoadWorker(
-                        licenseEntityAtomicReference,
-                        licenseEntityService,
+                        entityRuntimeComponent.licenseEntityRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef(),
                         Objects.requireNonNullElse((IOFormat) licenseLoadFormatComboBox.getSelectedItem(), IOFormat.BINARY),
                         licenseFileChooser.getSelectedFile()
                 ).execute();
@@ -98,25 +108,25 @@ public class LicensePanel extends JPanel {
 
         displayLicenseButton.addActionListener(_ ->
                 new LicenseViewWorker(
-                        licenseEntityAtomicReference,
-                        licenseEntityService
+                        entityRuntimeComponent.licenseEntityRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef()
                 ).execute()
         );
 
         signLicenseButton.addActionListener(_ ->
                 new LicenseSignWorker(
-                        licenseEntityAtomicReference,
-                        licenseKeyPairEntityAtomicReference,
-                        licenseEntityService,
+                        entityRuntimeComponent.licenseEntityRef(),
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef(),
                         Objects.requireNonNullElse((String) signatureDigestComboBox.getSelectedItem(), "SHA-512")
                 ).execute()
         );
 
         verifyLicenseButton.addActionListener(_ ->
                 new LicenseVerifyWorker(
-                        licenseEntityAtomicReference,
-                        licenseKeyPairEntityAtomicReference,
-                        licenseEntityService
+                        entityRuntimeComponent.licenseEntityRef(),
+                        entityRuntimeComponent.licenseKeyPairRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef()
                 ).execute()
         );
 
@@ -130,8 +140,8 @@ public class LicensePanel extends JPanel {
 
             if (option == JFileChooser.APPROVE_OPTION) {
                 new LicenseSaveWorker(
-                        licenseEntityAtomicReference,
-                        licenseEntityService,
+                        entityRuntimeComponent.licenseEntityRef(),
+                        serviceRuntimeComponent.licenseEntityServiceRef(),
                         licenseSaveNameTextField.getText(),
                         Objects.requireNonNullElse((IOFormat) licenseSaveFormatComboBox.getSelectedItem(), IOFormat.BINARY),
                         licenseSaveFolderChooser.getSelectedFile()
