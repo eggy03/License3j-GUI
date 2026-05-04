@@ -158,8 +158,4 @@ public class KeyPanel extends JPanel {
 
         return this;
     }
-
-    public JScrollPane getAsScrollPane() {
-        return new JScrollPane(this);
-    }
 }

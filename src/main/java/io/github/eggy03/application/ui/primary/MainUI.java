@@ -12,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jspecify.annotations.NonNull;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 import java.awt.Rectangle;
@@ -47,48 +48,42 @@ public class MainUI extends JFrame {
 
     public MainUI initComponents() {
 
-        JScrollPane menuPane = new MenuPanel()
+        JPanel menuPane = new MenuPanel()
                 .initUI()
                 .initComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
-        JScrollPane licensePane = new LicensePanel(entityRuntimeComponent, serviceRuntimeComponent)
+        JPanel licensePane = new LicensePanel(entityRuntimeComponent, serviceRuntimeComponent)
                 .initUI()
                 .initComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
-        JScrollPane featurePane = new FeaturePanel(entityRuntimeComponent, serviceRuntimeComponent)
+        JPanel featurePane = new FeaturePanel(entityRuntimeComponent, serviceRuntimeComponent)
                 .initUI()
                 .addComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
-        JScrollPane keyPane = new KeyPanel(entityRuntimeComponent, serviceRuntimeComponent)
+        JPanel keyPane = new KeyPanel(entityRuntimeComponent, serviceRuntimeComponent)
                 .initUI()
                 .initComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
-        JScrollPane logPane = new LogPanel()
+        JPanel logPane = new LogPanel()
                 .initUI()
                 .initComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
-        JScrollPane statusPane = new StatusPanel(entityRuntimeComponent)
+        JPanel statusPane = new StatusPanel(entityRuntimeComponent)
                 .initUI()
                 .initComponents()
-                .initListeners()
-                .getAsScrollPane();
+                .initListeners();
 
         add(menuPane, "cell 0 0 3 1, grow"); // cell column row width height
-        add(licensePane, "cell 0 1, grow");
-        add(featurePane, "cell 1 1, grow");
-        add(keyPane, "cell 2 1, grow");
-        add(logPane, "cell 0 2 2 1, grow");
-        add(statusPane, "cell 2 2 1 1, grow");
+        add(new JScrollPane(licensePane), "cell 0 1, grow");
+        add(new JScrollPane(featurePane), "cell 1 1, grow");
+        add(new JScrollPane(keyPane), "cell 2 1, grow");
+        add(new JScrollPane(logPane), "cell 0 2 2 1, grow");
+        add(new JScrollPane(statusPane), "cell 2 2 1 1, grow");
 
         return this;
     }

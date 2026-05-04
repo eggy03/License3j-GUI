@@ -42,8 +42,4 @@ public class MenuPanel extends JPanel {
         aboutMenuItem.addActionListener(_ -> new AboutUI().setVisible(true));
         return this;
     }
-
-    public JScrollPane getAsScrollPane() {
-        return new JScrollPane(this);
-    }
 }

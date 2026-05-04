@@ -8,7 +8,6 @@ import org.jspecify.annotations.NonNull;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -89,9 +88,5 @@ public class StatusPanel extends JPanel {
         }).start();
 
         return this;
-    }
-
-    public JScrollPane getAsScrollPane() {
-        return new JScrollPane(this);
     }
 }

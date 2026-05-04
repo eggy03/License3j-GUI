@@ -41,8 +41,4 @@ public class LogPanel extends JPanel {
 
         return this;
     }
-
-    public JScrollPane getAsScrollPane() {
-        return new JScrollPane(this);
-    }
 }

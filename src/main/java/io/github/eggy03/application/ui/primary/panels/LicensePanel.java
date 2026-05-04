@@ -151,8 +151,4 @@ public class LicensePanel extends JPanel {
 
         return this;
     }
-
-    public JScrollPane getAsScrollPane() {
-        return new JScrollPane(this);
-    }
 }
