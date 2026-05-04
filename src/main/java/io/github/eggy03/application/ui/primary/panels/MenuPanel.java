@@ -1,6 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import app.ui.secondary.AboutUI;
+import io.github.eggy03.application.ui.secondary.AboutUI;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
