@@ -35,7 +35,8 @@ public class GlobalUISettings {
     public GlobalUISettings() {
         try {
             UIManager.setLookAndFeel(defaultLAF);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
             log.error("Default LAF [{}] cannot be applied", defaultLAF);
             log.debug("Stack trace for LAF failure", e);
         }
@@ -47,13 +48,14 @@ public class GlobalUISettings {
      * @param lookAndFeel fully qualified class name of the desired LAF
      * @throws NullPointerException if {@code lookAndFeel} is {@code null}
      *
-     * <p>If the Look and Feel cannot be applied, the error is logged and the
-     * application continues with the existing/default LAF.</p>
+     *                              <p>If the Look and Feel cannot be applied, the error is logged and the
+     *                              application continues with the existing/default LAF.</p>
      */
     public GlobalUISettings(@NonNull String lookAndFeel) {
         try {
             UIManager.setLookAndFeel(Objects.requireNonNull(lookAndFeel, "LAF name cannot be null"));
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
             log.error("LAF [{}] cannot be applied", lookAndFeel);
             log.debug("Stack trace for LAF failure", e);
         }
@@ -90,13 +92,13 @@ public class GlobalUISettings {
      *
      * @param value {@code true} to show separators, {@code false} to hide them
      *
-     * <p><strong>Effects:</strong></p>
-     * <ul>
-     *     <li>{@code TabbedPane.showTabSeparators}</li>
-     *     <li>{@code TabbedPane.tabSeparatorsFullHeight}</li>
-     * </ul>
+     *              <p><strong>Effects:</strong></p>
+     *              <ul>
+     *                  <li>{@code TabbedPane.showTabSeparators}</li>
+     *                  <li>{@code TabbedPane.tabSeparatorsFullHeight}</li>
+     *              </ul>
      *
-     * <p>Applies globally to all tabbed panes.</p>
+     *              <p>Applies globally to all tabbed panes.</p>
      */
     public void enableTabSeparators(boolean value) {
         UIManager.put("TabbedPane.showTabSeparators", value);

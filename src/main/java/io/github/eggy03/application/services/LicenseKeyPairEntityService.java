@@ -19,6 +19,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
+
 // todo improve exception messages
 public class LicenseKeyPairEntityService {
 
@@ -38,20 +39,20 @@ public class LicenseKeyPairEntityService {
         Objects.requireNonNull(publicKeyFile, "publicKeyFile cannot be null");
         Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
 
-        if(!privateKeyFile.isFile())
+        if (!privateKeyFile.isFile())
             throw new KeyReadException("Provided privateKeyFile is not a file");
 
-        if(!publicKeyFile.isFile())
+        if (!publicKeyFile.isFile())
             throw new KeyReadException("Provided publicKeyFile is not a file");
 
-        try(KeyPairReader privateKeyReader = new KeyPairReader(privateKeyFile); KeyPairReader publicKeyReader = new KeyPairReader(publicKeyFile)) {
+        try (KeyPairReader privateKeyReader = new KeyPairReader(privateKeyFile); KeyPairReader publicKeyReader = new KeyPairReader(publicKeyFile)) {
 
             LicenseKeyPair privateKeyPair = privateKeyReader.readPrivate(keyFormat);
             LicenseKeyPair publicKeyPair = publicKeyReader.readPublic(keyFormat);
 
             // check for cipher match
-            if(!privateKeyPair.cipher().equals(publicKeyPair.cipher()))
-                throw new KeyReadException("Cypher Mismatch! Private Key has: "+ privateKeyPair.cipher()+" while Public Key has: "+publicKeyPair.cipher());
+            if (!privateKeyPair.cipher().equals(publicKeyPair.cipher()))
+                throw new KeyReadException("Cypher Mismatch! Private Key has: " + privateKeyPair.cipher() + " while Public Key has: " + publicKeyPair.cipher());
 
             final String cipher = privateKeyPair.cipher();
             PrivateKey privateKey = Objects.requireNonNull(privateKeyPair.getPair().getPrivate(), "privateKey cannot be null");
@@ -76,19 +77,19 @@ public class LicenseKeyPairEntityService {
 
         Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
 
-        if(!keyFolder.isDirectory())
+        if (!keyFolder.isDirectory())
             throw new KeySaveException("Provided key folder:" + keyFolder.getPath() + "is not a directory");
 
-        if(!privateKeyName.matches("^[a-zA-Z0-9._-]+$"))
+        if (!privateKeyName.matches("^[a-zA-Z0-9._-]+$"))
             throw new KeySaveException("Private Key name:" + privateKeyName + "contains invalid characters");
 
-        if(!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
+        if (!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
             throw new KeySaveException("Public Key name:" + publicKeyName + "contains invalid characters");
 
         LicenseKeyPair originalKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
         LicenseKeyPair copyKeyPair = LicenseKeyPair.Create.from(originalKeyPair.getPair(), originalKeyPair.cipher());
 
-        try(KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {
+        try (KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {
             keyPairWriter.write(copyKeyPair, keyFormat);
             return new LicenseKeyPairEntity(copyKeyPair);
         } catch (IOException e) {

@@ -128,7 +128,7 @@ public class LicensePanel extends JPanel {
             licenseSaveFolderChooser.setApproveButtonText("Select Directory");
             int option = licenseSaveFolderChooser.showOpenDialog(this);
 
-            if(option == JFileChooser.APPROVE_OPTION) {
+            if (option == JFileChooser.APPROVE_OPTION) {
                 new LicenseSaveWorker(
                         licenseEntityAtomicReference,
                         licenseEntityService,

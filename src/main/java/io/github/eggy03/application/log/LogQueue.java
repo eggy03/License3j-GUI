@@ -11,17 +11,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class LogQueue {
 
+    private static final BlockingQueue<String> BLOCKING_QUEUE = new LinkedBlockingQueue<>(5000);
+
     private LogQueue() {
         /* This utility class should not be instantiated */
     }
-
-    private static final BlockingQueue<String> BLOCKING_QUEUE = new LinkedBlockingQueue<>(5000);
 
     public static boolean enqueueMessage(@NonNull String logMessage) {
 
         boolean queueSuccess = BLOCKING_QUEUE.offer(logMessage);
 
-        if(!queueSuccess) {
+        if (!queueSuccess) {
             BLOCKING_QUEUE.poll(); // remove oldest message
             return BLOCKING_QUEUE.offer(logMessage);
         }

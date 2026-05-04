@@ -25,7 +25,7 @@ public class Start {
             final AtomicReference<LicenseKeyPairEntity> licenseKeyPairEntityAtomicReference = new AtomicReference<>();
             final LicenseKeyPairEntityService licenseKeyPairEntityService = new LicenseKeyPairEntityService();
 
-            EventQueue.invokeLater(()-> {
+            EventQueue.invokeLater(() -> {
                 new GlobalUISettings().enableRoundComponents().enableTabSeparators(true);
                 new MainUI().addComponents(
                         licenseEntityAtomicReference, licenseEntityService,

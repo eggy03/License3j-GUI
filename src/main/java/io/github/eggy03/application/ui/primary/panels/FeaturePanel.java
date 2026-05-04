@@ -78,12 +78,12 @@ public class FeaturePanel extends JPanel {
             String featureType = String.valueOf(featureTypeComboBox.getSelectedItem());
             String featureValue = featureValueTextField.getText();
 
-            Feature feature = Feature.Create.from(featureName + ":" +featureType + "=" + featureValue);
+            Feature feature = Feature.Create.from(featureName + ":" + featureType + "=" + featureValue);
             new LicenseFeatureAdditionWorker(licenseEntityAtomicReference, licenseEntityService, feature).execute();
         });
 
         // addMachineIdButton action listener
-        addMachineIdButton.addActionListener(_-> {
+        addMachineIdButton.addActionListener(_ -> {
             Feature feature = Feature.Create.from("licenseId:UUID=" + machineIdTextField.getText());
             new LicenseFeatureAdditionWorker(licenseEntityAtomicReference, licenseEntityService, feature).execute();
         });

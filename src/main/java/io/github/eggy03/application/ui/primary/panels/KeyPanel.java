@@ -82,7 +82,7 @@ public class KeyPanel extends JPanel {
             @NonNull final LicenseKeyPairEntityService licenseKeyPairEntityService
     ) {
 
-        generateKeysButton.addActionListener(_->
+        generateKeysButton.addActionListener(_ ->
                 new KeyPairGenerationWorker(
                         licenseKeyPairEntityAtomicReference,
                         licenseKeyPairEntityService,
@@ -91,14 +91,14 @@ public class KeyPanel extends JPanel {
                 ).execute()
         );
 
-        digestPublicKeyButton.addActionListener(_->
+        digestPublicKeyButton.addActionListener(_ ->
                 new PublicKeyDigestWorker(
                         licenseKeyPairEntityAtomicReference,
                         licenseKeyPairEntityService
                 ).execute()
         );
 
-        saveKeysButton.addActionListener(_-> {
+        saveKeysButton.addActionListener(_ -> {
             JFileChooser keySaveFolderChooser = new JFileChooser();
             keySaveFolderChooser.setDialogTitle("Choose a directory to save your keys");
             keySaveFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -106,7 +106,7 @@ public class KeyPanel extends JPanel {
             keySaveFolderChooser.setApproveButtonText("Select Directory");
             int option = keySaveFolderChooser.showOpenDialog(this);
 
-            if(option == JFileChooser.APPROVE_OPTION) {
+            if (option == JFileChooser.APPROVE_OPTION) {
                 new KeyPairSaveWorker(
                         licenseKeyPairEntityAtomicReference,
                         licenseKeyPairEntityService,
@@ -118,7 +118,7 @@ public class KeyPanel extends JPanel {
             }
         });
 
-        loadKeysButton.addActionListener(_-> {
+        loadKeysButton.addActionListener(_ -> {
 
             JFileChooser privateKeySelector = new JFileChooser();
             privateKeySelector.setDialogTitle("Load Private Key");
@@ -133,13 +133,13 @@ public class KeyPanel extends JPanel {
             publicKeySelector.setApproveButtonText("Select Public Key File");
 
             if (privateKeySelector.showOpenDialog(this) == JFileChooser.APPROVE_OPTION && publicKeySelector.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                    new KeyPairLoaderWorker(
-                            licenseKeyPairEntityAtomicReference,
-                            licenseKeyPairEntityService,
-                            (IOFormat) Objects.requireNonNull(keyLoadFormatComboBox.getSelectedItem()),
-                            privateKeySelector.getSelectedFile(),
-                            publicKeySelector.getSelectedFile()
-                    ).execute();
+                new KeyPairLoaderWorker(
+                        licenseKeyPairEntityAtomicReference,
+                        licenseKeyPairEntityService,
+                        (IOFormat) Objects.requireNonNull(keyLoadFormatComboBox.getSelectedItem()),
+                        privateKeySelector.getSelectedFile(),
+                        publicKeySelector.getSelectedFile()
+                ).execute();
             }
 
         });
