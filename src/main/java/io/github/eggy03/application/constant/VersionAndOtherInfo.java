@@ -20,7 +20,6 @@ public class VersionAndOtherInfo {
             License3j is a free and open-source Java library to manage license files in Java programs.
             A license file is a special electronically signed configuration file. The library can create
             (including signing), read, and verify such license files.
-            Learn more about License3j on GitHub.
             </p>
             
             <h2>Licensing</h2>

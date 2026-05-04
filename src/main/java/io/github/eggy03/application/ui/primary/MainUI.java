@@ -1,6 +1,5 @@
 package io.github.eggy03.application.ui.primary;
 
-import app.ui.primary.App;
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
 import io.github.eggy03.application.services.LicenseEntityService;
@@ -27,7 +26,7 @@ public class MainUI extends JFrame {
     public MainUI() {
         setTitle("License3j-GUI");
         setLayout(new MigLayout("insets 1", "[grow][grow][grow]", "[][grow][grow]"));
-        setIconImage(Toolkit.getDefaultToolkit().getImage(App.class.getResource("/icons/logo.png")));
+        setIconImage(Toolkit.getDefaultToolkit().getImage(MainUI.class.getResource("/icons/logo.png")));
         setBounds(new Rectangle(100, 100, 1100, 450));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

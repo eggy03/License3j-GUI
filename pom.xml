@@ -13,6 +13,8 @@
 
     <!-- ===================== PROPERTIES ===================== -->
     <properties>
+        <main.class>io.github.eggy03.application.Start</main.class>
+
         <!-- Build -->
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,7 +25,6 @@
         <miglayout.version>11.4.2</miglayout.version>
         <commons.io.version>2.19.0</commons.io.version>
         <flatlaf.version>3.5.4</flatlaf.version>
-        <flexmark.version>0.64.8</flexmark.version>
         <jspecify.version>1.0.0</jspecify.version>
         <slf4j.version>2.0.17</slf4j.version>
 
@@ -88,13 +89,6 @@
             <version>${commons.io.version}</version>
         </dependency>
 
-        <!-- Markdown -->
-        <dependency>
-            <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-all</artifactId>
-            <version>${flexmark.version}</version>
-        </dependency>
-
         <!-- Annotations -->
         <dependency>
             <groupId>org.jspecify</groupId>
@@ -130,7 +124,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>app.ui.primary.App</mainClass>
+                            <mainClass>${main.class}</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
