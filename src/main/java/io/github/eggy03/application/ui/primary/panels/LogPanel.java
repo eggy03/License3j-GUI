@@ -1,6 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.log.CustomLogQueue;
+import io.github.eggy03.application.log.LogQueue;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JPanel;
@@ -31,7 +31,7 @@ public class LogPanel extends JPanel {
 
         // poll log queue every 100ms and flush log to text area in UI
         new Timer(100, _ -> {
-            String logMessage = CustomLogQueue.dequeueMessage();
+            String logMessage = LogQueue.dequeueMessage();
             if (logMessage != null) SwingUtilities.invokeLater(() -> logTextArea.append(logMessage));
         }).start();
 

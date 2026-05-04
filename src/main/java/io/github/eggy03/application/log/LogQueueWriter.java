@@ -6,17 +6,17 @@ import org.tinylog.writers.AbstractFormatPatternWriter;
 import java.util.Map;
 
 /**
- * A custom TinyLog writer that publishes all logs to a queue defined by {@link CustomLogQueue}
+ * A custom TinyLog writer that publishes all logs to a queue defined by {@link LogQueue}
  */
-public class CustomLogWriter extends AbstractFormatPatternWriter {
+public class LogQueueWriter extends AbstractFormatPatternWriter {
 
-    public CustomLogWriter(final Map<String, String> properties) {
+    public LogQueueWriter(final Map<String, String> properties) {
         super(properties);
     }
 
     @Override
     public void write(LogEntry logEntry) {
-        CustomLogQueue.enqueueMessage(render(logEntry));
+        LogQueue.enqueueMessage(render(logEntry));
     }
 
     @Override

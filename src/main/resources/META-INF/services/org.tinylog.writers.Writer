@@ -1,1 +1,1 @@
-io.github.eggy03.application.log.CustomLogWriter
+io.github.eggy03.application.log.LogQueueWriter

@@ -9,9 +9,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * This queue is consumed by a JTextArea to display all the logs
  */
-public class CustomLogQueue {
+public class LogQueue {
 
-    private CustomLogQueue() {
+    private LogQueue() {
         /* This utility class should not be instantiated */
     }
 
