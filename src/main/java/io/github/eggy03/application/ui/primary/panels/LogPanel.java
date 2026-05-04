@@ -21,11 +21,15 @@ public class LogPanel extends JPanel {
         setBorder(new TitledBorder("License Operation Logs"));
 
         logTextArea.setEditable(false);
+        logTextArea.setRows(8); // this will prevent the text area from taking up all the screen space
 
         return this;
     }
 
     public LogPanel initComponents() {
+        // you also need to wrap a scroll pane around the text area even if the parent panel/component
+        // is wrapped in its own scroll pane
+        // otherwise setRows() for text area wont work
         add(new JScrollPane(logTextArea), "cell 0 0 1 1, grow");
 
         return this;
