@@ -1,4 +1,4 @@
-package io.github.eggy03.application.component;
+package io.github.eggy03.application.ui.component;
 
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;

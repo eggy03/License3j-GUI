@@ -1,7 +1,7 @@
 package io.github.eggy03.application;
 
-import io.github.eggy03.application.component.EntityRuntimeComponent;
-import io.github.eggy03.application.component.ServiceRuntimeComponent;
+import io.github.eggy03.application.ui.component.EntityRuntimeComponent;
+import io.github.eggy03.application.ui.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.primary.MainUI;
 import io.github.eggy03.application.ui.utility.GlobalUISettings;
 import org.slf4j.Logger;
