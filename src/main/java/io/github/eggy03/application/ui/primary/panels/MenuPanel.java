@@ -1,5 +1,6 @@
 package io.github.eggy03.application.ui.primary.panels;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import io.github.eggy03.application.ui.secondary.AboutUI;
 
 import javax.swing.JMenu;
@@ -26,10 +27,10 @@ public class MenuPanel extends JPanel {
     private final JMenuBar menuBar = new JMenuBar();
 
     // define menus
-    private final JMenu helpMenu = new JMenu("Help");
+    private final JMenu helpMenu = new JMenu();
 
     // define menu items
-    private final JMenuItem aboutMenuItem = new JMenuItem("About");
+    private final JMenuItem aboutMenuItem = new JMenuItem();
 
     /**
      * Configures layout, borders, and component properties.
@@ -48,6 +49,11 @@ public class MenuPanel extends JPanel {
      */
     public MenuPanel initComponents() {
         // order: menu items -> menus -> menu bar -> panel
+
+        aboutMenuItem.setText("About");
+        aboutMenuItem.setIcon(new FlatSVGIcon(MenuPanel.class.getResource("/icons/general/about.svg")));
+
+        helpMenu.setText("Help");
         helpMenu.add(aboutMenuItem);
 
         menuBar.add(helpMenu);
