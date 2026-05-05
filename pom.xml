@@ -36,7 +36,7 @@
         <jpackage.mave.plugin.version>1.7.4</jpackage.mave.plugin.version>
 
         <!-- Extras -->
-        <app.name>License3j_GUI</app.name>
+        <app.name>license3j-gui</app.name>
         <app.main.class>io.github.eggy03.application.Start</app.main.class>
         <app.fatjar.name>${project.build.finalName}-jar-with-dependencies.jar</app.fatjar.name>
         <app.fatjar.directory>${project.build.directory}/fatjar</app.fatjar.directory>
@@ -280,6 +280,7 @@
                                 <id>mac</id>
                                 <configuration>
                                     <icon>${project.mac.icon}</icon>
+                                    <macPackageIdentifier>io.github.eggy03.license3jgui</macPackageIdentifier>
                                 </configuration>
                             </execution>
 
