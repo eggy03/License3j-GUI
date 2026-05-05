@@ -21,7 +21,7 @@ import java.util.Objects;
 public class GlobalUISettings {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalUISettings.class);
-    private final String defaultLAF = "com.formdev.flatlaf.themes.FlatMacDarkLaf";
+    private static final String DEFAULT_LAF = "com.formdev.flatlaf.themes.FlatMacDarkLaf";
 
     /**
      * Creates a configuration instance using the default FlatLaf theme:
@@ -34,10 +34,10 @@ public class GlobalUISettings {
      */
     public GlobalUISettings() {
         try {
-            UIManager.setLookAndFeel(defaultLAF);
+            UIManager.setLookAndFeel(DEFAULT_LAF);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
-            log.error("Default LAF [{}] cannot be applied", defaultLAF);
+            log.error("Default LAF [{}] cannot be applied", DEFAULT_LAF);
             log.debug("Stack trace for LAF failure", e);
         }
     }
@@ -90,14 +90,7 @@ public class GlobalUISettings {
     /**
      * Enables or disables tab separators in {@code JTabbedPane}.
      *
-     * @param value {@code true} to show separators, {@code false} to hide them
-     *
-     *              <p><strong>Effects:</strong></p>
-     *              <ul>
-     *                  <li>{@code TabbedPane.showTabSeparators}</li>
-     *                  <li>{@code TabbedPane.tabSeparatorsFullHeight}</li>
-     *              </ul>
-     *
+     * @param value {@code true} to show separators with full height, {@code false} to hide them.
      *              <p>Applies globally to all tabbed panes.</p>
      */
     public void enableTabSeparators(boolean value) {
