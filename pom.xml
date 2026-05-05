@@ -23,8 +23,9 @@
         <license3j.version>3.3.0</license3j.version>
         <tinylog.version>2.7.0</tinylog.version>
         <miglayout.version>11.4.2</miglayout.version>
-        <commons.io.version>2.19.0</commons.io.version>
-        <flatlaf.version>3.5.4</flatlaf.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <flatlaf.version>3.7.1</flatlaf.version>
+        <jsvg.version>2.1.0</jsvg.version>
         <jspecify.version>1.0.0</jspecify.version>
         <slf4j.version>2.0.17</slf4j.version>
 
@@ -91,6 +92,17 @@
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
             <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.weisj</groupId>
+            <artifactId>jsvg</artifactId>
+            <version>${jsvg.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Utilities -->
