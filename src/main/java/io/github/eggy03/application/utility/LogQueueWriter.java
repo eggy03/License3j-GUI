@@ -1,4 +1,4 @@
-package io.github.eggy03.application.log;
+package io.github.eggy03.application.utility;
 
 import org.tinylog.core.LogEntry;
 import org.tinylog.writers.AbstractFormatPatternWriter;
@@ -6,7 +6,7 @@ import org.tinylog.writers.AbstractFormatPatternWriter;
 import java.util.Map;
 
 /**
- * A custom TinyLog writer that publishes all logs to a queue defined by {@link LogQueue}
+ * TinyLog writer that forwards formatted log entries to {@link LogQueue}.
  */
 public class LogQueueWriter extends AbstractFormatPatternWriter {
 
@@ -14,9 +14,15 @@ public class LogQueueWriter extends AbstractFormatPatternWriter {
         super(properties);
     }
 
+    /**
+     * This writer renders each {@link LogEntry} using the configured pattern
+     * and enqueues the result to {@link LogQueue}
+     *
+     * @param logEntry Log entry to output
+     */
     @Override
     public void write(LogEntry logEntry) {
-        LogQueue.enqueueMessage(render(logEntry));
+        LogQueue.enqueueLog(render(logEntry));
     }
 
     @Override
