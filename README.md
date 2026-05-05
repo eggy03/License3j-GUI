@@ -13,13 +13,12 @@ You can download pre-built binaries from the [Releases](https://github.com/Egg-0
 
 You can also build your own binaries from the source code using Maven
 
-#### Clone the repository locally
 
 ```
 git clone https://github.com/eggy03/License3j-GUI.git
 cd License3j-GUI
 ```
-- Build the application depending on your platform
+
 ```shell
 ./mvnw -Pdist package jpackage:jpackage@win
 ```
@@ -29,13 +28,12 @@ cd License3j-GUI
 ```shell
 ./mvnw -Pdist package jpackage:jpackage@mac
 ```
+The generated binaries will be available in `{base.dir}/target/output`
 
-#### Build artifacts using Maven
+If you don't want to use jpackage and instead, want a runnable JAR
 
-In the repository directory, run the following command
-
-```
-mvn -e clean package
+```shell
+./mvnw clean package
 ```
 
 # Instructions
