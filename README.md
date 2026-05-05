@@ -7,7 +7,10 @@ create key pairs and create and sign licenses.
 
 # Download
 
-You can download pre-built binaries from the [Releases](https://github.com/Egg-03/License3j-GUI/releases/latest) page
+You can download pre-built binaries from the [Releases](https://github.com/Egg-03/License3j-GUI/releases/latest) page.
+
+> [!IMPORTANT]
+> Pre-built binaries are not signed. Your AV or any runtime protection may flag them. As of now, releases page is the only official source for downloading pre-built binaries.
 
 # Build
 
@@ -43,6 +46,9 @@ the [License3j Readme](https://github.com/verhas/License3j/blob/master/README.ad
 this application works. You can also refer to the [License3j REPL Readme](https://github.com/verhas/License3jRepl)
 
 Upon starting the application, you will see this UI
+
+<img width="1082" height="440" alt="image" src="https://github.com/user-attachments/assets/53f5c0a3-bb24-4073-b4a5-e9a988dbd809" />
+
 
 ---
 
