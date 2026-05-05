@@ -75,8 +75,6 @@ public class FeaturePanel extends JPanel {
         setLayout(new MigLayout("insets 1, fill", "[][]", "[][][][][][]"));
         setBorder(new TitledBorder("License Features"));
 
-        machineIdTextField.setEditable(false);
-
         return this;
     }
 
