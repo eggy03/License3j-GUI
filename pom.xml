@@ -6,7 +6,7 @@
 
     <groupId>io.github.eggy03</groupId>
     <artifactId>license3j-gui</artifactId>
-    <version>2.0.0-alpha1</version>
+    <version>2.0.0</version>
 
     <name>License3j-GUI</name>
     <description>A GUI for License3j REPL application</description>
@@ -31,6 +31,22 @@
         <!-- Plugins -->
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
+        <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
+        <jlink.maven.plugin.version>1.2.1</jlink.maven.plugin.version>
+        <jpackage.mave.plugin.version>1.7.4</jpackage.mave.plugin.version>
+
+        <!-- Extras -->
+        <app.name>License3j_GUI</app.name>
+        <app.main.class>io.github.eggy03.application.Start</app.main.class>
+        <app.fatjar.name>${project.build.finalName}-jar-with-dependencies.jar</app.fatjar.name>
+        <app.fatjar.directory>${project.build.directory}/fatjar</app.fatjar.directory>
+
+        <jlink.output.directory>${project.build.directory}/runtime</jlink.output.directory>
+        <jpackage.output.directory>${project.build.directory}/output</jpackage.output.directory>
+
+        <project.windows.icon>${project.basedir}/icons/license.ico</project.windows.icon>
+        <project.linux.icon>${project.basedir}/icons/license.png</project.linux.icon>
+        <project.mac.icon>${project.basedir}/icons/license.icns</project.mac.icon>
     </properties>
 
     <!-- ===================== DEPENDENCIES ===================== -->
@@ -136,5 +152,143 @@
 
         </plugins>
     </build>
+
+    <!-- ===================== PROFILE ===================== -->
+    <profiles>
+        <!--JVM Builds With Jpackage-->
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven.resources.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-jpackage-input</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${app.fatjar.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>${app.fatjar.name}</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jlink-maven-plugin</artifactId>
+                        <version>${jlink.maven.plugin.version}</version>
+
+                        <executions>
+                            <execution>
+                                <id>jlink-runtime</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jlink</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <output>${jlink.output.directory}</output>
+
+                            <addModules>
+                                <addModule>java.base</addModule>
+                                <addModule>java.desktop</addModule>
+                                <addModule>java.logging</addModule>
+                                <addModule>java.xml</addModule>
+                                <addModule>java.prefs</addModule>
+                                <addModule>java.datatransfer</addModule>
+                                <addModule>java.management</addModule>
+                                <addModule>java.naming</addModule>
+                                <addModule>jdk.unsupported</addModule>
+                            </addModules>
+
+                            <stripDebug>false</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <noManPages>true</noManPages>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>${jpackage.mave.plugin.version}</version>
+
+                        <!-- Base config shared by all OSes -->
+                        <configuration>
+                            <name>${app.name}</name>
+                            <appVersion>${project.version}</appVersion>
+                            <vendor>eggy03</vendor>
+                            <description>${project.name}</description>
+
+                            <!-- App-image only -->
+                            <type>APP_IMAGE</type>
+
+                            <!-- Fat JAR -->
+                            <input>${app.fatjar.directory}</input>
+                            <mainJar>${app.fatjar.name}</mainJar>
+                            <mainClass>${app.main.class}</mainClass>
+
+                            <!-- Custom JRE created by jlink -->
+                            <runtimeImage>${jlink.output.directory}</runtimeImage>
+
+                            <!-- Output -->
+                            <destination>${jpackage.output.directory}</destination>
+
+                            <!-- JVM opts -->
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                            </javaOptions>
+
+                            <!-- Windows GUI -->
+                            <winConsole>false</winConsole>
+                        </configuration>
+
+                        <!-- OS-selectable executions -->
+                        <executions>
+
+                            <!-- Windows -->
+                            <execution>
+                                <id>win</id>
+                                <configuration>
+                                    <icon>${project.windows.icon}</icon>
+                                </configuration>
+                            </execution>
+
+                            <!-- Linux -->
+                            <execution>
+                                <id>linux</id>
+                                <configuration>
+                                    <icon>${project.linux.icon}</icon>
+                                </configuration>
+                            </execution>
+
+                            <!-- Mac -->
+                            <execution>
+                                <id>mac</id>
+                                <configuration>
+                                    <icon>${project.mac.icon}</icon>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

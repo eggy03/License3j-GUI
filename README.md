@@ -17,6 +17,17 @@ You can also build your own binaries from the source code using Maven
 
 ```
 git clone https://github.com/eggy03/License3j-GUI.git
+cd License3j-GUI
+```
+- Build the application depending on your platform
+```shell
+./mvnw -Pdist package jpackage:jpackage@win
+```
+```shell
+./mvnw -Pdist package jpackage:jpackage@linux
+```
+```shell
+./mvnw -Pdist package jpackage:jpackage@mac
 ```
 
 #### Build artifacts using Maven
