@@ -1,0 +1,190 @@
+package io.github.eggy03.application.services;
+
+import io.github.eggy03.application.entity.LicenseKeyPairEntity;
+import io.github.eggy03.application.exception.KeyDigestException;
+import io.github.eggy03.application.exception.KeyGenerationException;
+import io.github.eggy03.application.exception.KeyReadException;
+import io.github.eggy03.application.exception.KeySaveException;
+import javax0.license3j.crypto.LicenseKeyPair;
+import javax0.license3j.io.IOFormat;
+import javax0.license3j.io.KeyPairReader;
+import javax0.license3j.io.KeyPairWriter;
+import org.jspecify.annotations.NonNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Objects;
+
+/**
+ * Service layer for {@link LicenseKeyPairEntity} operations.
+ *
+ * <p>Provides functionality to generate, load, save, and inspect
+ * cryptographic key pairs using the License3j library.</p>
+ *
+ * <p>Operations are performed on defensive copies where applicable
+ * to avoid unintended mutation of shared state.</p>
+ *
+ * <p>Failures are wrapped in domain-specific runtime exceptions.</p>
+ */
+public class LicenseKeyPairEntityService {
+
+    /**
+     * Generates a new key pair using the specified cipher and key size.
+     *
+     * @param cipher the cipher string (e.g., RSA, RSA/ECB/PKCS1Padding)
+     * @param size   the key size (e.g., 1024, 2048, 3072, 4096)
+     * @return a new {@link LicenseKeyPairEntity}
+     * @throws KeyGenerationException when the cipher specifies an algorithm that is not known by the encryption provider
+     */
+    @NonNull
+    public LicenseKeyPairEntity generateLicenseKeyPair(@NonNull String cipher, int size) {
+        try {
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(cipher, size));
+        } catch (NoSuchAlgorithmException e) {
+            throw new KeyGenerationException("Incompatible Cipher", e);
+        }
+    }
+
+    /**
+     * Loads a key pair from separate private and public key files.
+     *
+     * <p>Ensures both keys use the same cipher before combining them.</p>
+     *
+     * @param privateKeyFile the private key file
+     * @param publicKeyFile  the public key file
+     * @param keyFormat      the key format
+     * @return a combined {@link LicenseKeyPairEntity}
+     * @throws KeyReadException if validation or reading fails
+     */
+    @NonNull
+    public LicenseKeyPairEntity loadLicenseKeyPair(@NonNull File privateKeyFile, @NonNull File publicKeyFile, @NonNull IOFormat keyFormat) {
+
+        Objects.requireNonNull(privateKeyFile, "privateKeyFile cannot be null");
+        Objects.requireNonNull(publicKeyFile, "publicKeyFile cannot be null");
+        Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
+
+        if (!privateKeyFile.isFile())
+            throw new KeyReadException("Provided privateKeyFile is not a file");
+
+        if (!publicKeyFile.isFile())
+            throw new KeyReadException("Provided publicKeyFile is not a file");
+
+        try (KeyPairReader privateKeyReader = new KeyPairReader(privateKeyFile); KeyPairReader publicKeyReader = new KeyPairReader(publicKeyFile)) {
+
+            LicenseKeyPair privateKeyPair = privateKeyReader.readPrivate(keyFormat);
+            LicenseKeyPair publicKeyPair = publicKeyReader.readPublic(keyFormat);
+
+            // check for cipher match
+            if (!privateKeyPair.cipher().equals(publicKeyPair.cipher()))
+                throw new KeyReadException(String.format("Cypher Mismatch! Private Key has [%s] while Public Key has [%s]", privateKeyPair.cipher(), publicKeyPair.cipher()));
+
+            final String cipher = privateKeyPair.cipher();
+            PrivateKey privateKey = Objects.requireNonNull(privateKeyPair.getPair().getPrivate(), "privateKey cannot be null");
+            PublicKey publicKey = Objects.requireNonNull(publicKeyPair.getPair().getPublic(), "publicKey cannot be null");
+
+            return new LicenseKeyPairEntity(LicenseKeyPair.Create.from(publicKey, privateKey, cipher));
+
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+            throw new KeyReadException("Key read failure", e);
+        }
+
+    }
+
+    /**
+     * Saves the key pair to the specified folder using provided file names and format.
+     *
+     * <p>File names are validated to prevent invalid or unsafe characters.</p>
+     *
+     * @param licenseKeyPairEntity the key pair to save
+     * @param keyFormat            the output format
+     * @param privateKeyName       the private key file name
+     * @param publicKeyName        the public key file name
+     * @param keyFolder            the target directory
+     * @return a new {@link LicenseKeyPairEntity} representing the saved keys
+     * @throws KeySaveException if validation or saving fails
+     */
+    @NonNull
+    public LicenseKeyPairEntity saveKeys(@NonNull LicenseKeyPairEntity licenseKeyPairEntity, @NonNull IOFormat keyFormat, @NonNull String privateKeyName, @NonNull String publicKeyName, @NonNull File keyFolder) {
+
+        Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
+        Objects.requireNonNull(keyFormat, "keyFormat cannot be null");
+
+        Objects.requireNonNull(privateKeyName, "privateKeyName cannot be null");
+        Objects.requireNonNull(publicKeyName, "publicKeyName cannot be null");
+
+        Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
+
+        if (!keyFolder.isDirectory())
+            throw new KeySaveException(String.format("Provided key folder [%s] is not a directory", keyFolder));
+
+        if (!privateKeyName.matches("^[a-zA-Z0-9._-]+$"))
+            throw new KeySaveException(String.format("Private key name '%s' contains invalid characters", privateKeyName));
+
+        if (!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
+            throw new KeySaveException(String.format("Public key name '%s' contains invalid characters", publicKeyName));
+
+        LicenseKeyPair originalKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
+        LicenseKeyPair copyKeyPair = LicenseKeyPair.Create.from(originalKeyPair.getPair(), originalKeyPair.cipher());
+
+        try (KeyPairWriter keyPairWriter = new KeyPairWriter(new File(keyFolder, privateKeyName), new File(keyFolder, publicKeyName))) {
+            keyPairWriter.write(copyKeyPair, keyFormat);
+            return new LicenseKeyPairEntity(copyKeyPair);
+        } catch (IOException e) {
+            throw new KeySaveException("Key save failure", e);
+        }
+    }
+
+    /**
+     * Generates an SHA-512 digest of the public key and returns it as a Java byte array string.
+     *
+     * <p>The output includes both the digest and the raw public key bytes formatted
+     * as Java code for embedding or verification purposes.</p>
+     *
+     * @param licenseKeyPairEntity the key pair containing the public key
+     * @return formatted string containing digest and key bytes
+     * @throws KeyDigestException if the digest algorithm is unavailable
+     */
+    @NonNull
+    public String digestPublicKey(@NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
+
+        Objects.requireNonNull(licenseKeyPairEntity, "licenseKeyPairEntity cannot be null");
+        LicenseKeyPair licenseKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
+
+        try {
+            byte[] publicKey = Objects.requireNonNull(licenseKeyPair.getPublic());
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+
+            byte[] calculatedDigest = digest.digest(publicKey);
+
+            StringBuilder javaCode = new StringBuilder("--KEY DIGEST START\nbyte [] digest = new byte[] {\n");
+            for (int i = 0; i < calculatedDigest.length; i++) {
+                int intVal = (calculatedDigest[i]) & 0xff;
+                javaCode.append(String.format("(byte)0x%02X, ", intVal));
+                if (i % 8 == 0) {
+                    javaCode.append("\n");
+                }
+            }
+            javaCode.append("\n};\n---KEY DIGEST END\n");
+
+            javaCode.append("--KEY START\nbyte [] key = new byte[] {\n");
+            for (int i = 0; i < publicKey.length; i++) {
+                int intVal = (publicKey[i]) & 0xff;
+                javaCode.append(String.format("(byte)0x%02X, ", intVal));
+                if (i % 8 == 0) {
+                    javaCode.append("\n");
+                }
+            }
+            javaCode.append("\n};\n---KEY END\n");
+
+            return javaCode.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new KeyDigestException("Public key digestion failure", e);
+        }
+    }
+}

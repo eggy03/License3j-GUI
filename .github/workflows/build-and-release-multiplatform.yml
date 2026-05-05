@@ -1,0 +1,112 @@
+name: Build and Release Binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: windows
+            arch: x64
+            jpackage_goal: win
+
+          - os: windows-11-arm
+            platform: windows
+            arch: arm64
+            jpackage_goal: win
+
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+            jpackage_goal: linux
+
+          - os: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+            jpackage_goal: linux
+
+          - os: macos-26-intel
+            platform: mac
+            arch: x64
+            jpackage_goal: mac
+
+          - os: macos-latest
+            platform: mac
+            arch: arm64
+            jpackage_goal: mac
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: semeru
+          java-version: 25
+          cache: maven
+
+      - name: Build and package
+        run: mvn -Pdist package jpackage:jpackage@${{ matrix.jpackage_goal }}
+
+      # ---------- Package output ----------
+      - name: Archive (Windows)
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          Push-Location target\output\license3j-gui
+          tar -a -c -f ../../../license3j-gui-${{ github.ref_name }}-${{ matrix.platform }}-${{ matrix.arch }}.zip *
+          Pop-Location
+
+      - name: Archive (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          cd target/output/license3j-gui
+          tar -czf ../../../license3j-gui-${{ github.ref_name }}-${{ matrix.platform }}-${{ matrix.arch }}.tar.gz *
+          cd ../../..
+
+      - name: Archive (MacOS)
+        if: matrix.platform == 'mac'
+        run: |
+          cd target/output/license3j-gui
+          tar -czf ../../../license3j-gui-${{ github.ref_name }}-${{ matrix.platform }}-${{ matrix.arch }}.tar.gz *
+          cd ../../..    
+
+      # ---------- Upload artifacts ----------
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: license3j-gui-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            license3j-gui-${{ github.ref_name }}-${{ matrix.platform }}-${{ matrix.arch }}.*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            license3j-gui-windows-x64/license3j-gui-${{ github.ref_name }}-windows-x64.zip
+            license3j-gui-windows-arm64/license3j-gui-${{ github.ref_name }}-windows-arm64.zip
+            license3j-gui-linux-x64/license3j-gui-${{ github.ref_name }}-linux-x64.tar.gz
+            license3j-gui-linux-arm64/license3j-gui-${{ github.ref_name }}-linux-arm64.tar.gz
+            license3j-gui-mac-x64/license3j-gui-${{ github.ref_name }}-mac-x64.tar.gz
+            license3j-gui-mac-arm64/license3j-gui-${{ github.ref_name }}-mac-arm64.tar.gz

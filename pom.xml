@@ -1,81 +1,307 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.egg-03</groupId>
-  <artifactId>license3j-gui</artifactId>
-  <version>1.0.1</version>
-  <name>License3j-GUI</name>
-  <description>A GUI for License3j REPL application</description>
-  <properties>
-	<maven.compiler.source>21</maven.compiler.source>
-	<maven.compiler.target>21</maven.compiler.target>
-	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <dependencies>
-  	<dependency>
-   		<groupId>com.javax0.license3j</groupId>
-    	<artifactId>license3j</artifactId>
-    	<version>3.3.0</version>
-	</dependency>
-	<dependency>
-    	<groupId>org.tinylog</groupId>
-    	<artifactId>tinylog-api</artifactId>
-    	<version>2.7.0</version>
-	</dependency>
-	<dependency>
-    	<groupId>org.tinylog</groupId>
-    	<artifactId>tinylog-impl</artifactId>
-    	<version>2.7.0</version>
-	</dependency>
-	<dependency>
-    	<groupId>com.miglayout</groupId>
-    	<artifactId>miglayout-swing</artifactId>
-    	<version>11.4.2</version>
-	</dependency>
-	<dependency>
-   		<groupId>commons-io</groupId>
-    	<artifactId>commons-io</artifactId>
-    	<version>2.19.0</version>
-	</dependency>
-	<dependency>
-    	<groupId>com.formdev</groupId>
-    	<artifactId>flatlaf</artifactId>
-    	<version>3.5.4</version>
-	</dependency>
-	<dependency>
-    	<groupId>com.formdev</groupId>
-    	<artifactId>flatlaf-extras</artifactId>
-    	<version>3.5.4</version>
-	</dependency>
-	<dependency>
-    	<groupId>com.vladsch.flexmark</groupId>
-    	<artifactId>flexmark-all</artifactId>
-    	<version>0.64.8</version>
-	</dependency>
-  </dependencies>
-  <build>
-  <plugins>
-    <plugin>
-      <artifactId>maven-assembly-plugin</artifactId>
-      <version>3.7.1</version>
-      <configuration>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-        <archive>
-          <manifest>
-            <mainClass>app.ui.primary.App</mainClass>
-          </manifest>
-        </archive>
-      </configuration>
-      <executions>
-        <execution>
-          <phase>package</phase>
-          <goals>
-            <goal>single</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
-</build>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.eggy03</groupId>
+    <artifactId>license3j-gui</artifactId>
+    <version>2.0.0</version>
+
+    <name>License3j-GUI</name>
+    <description>A GUI for License3j REPL application</description>
+
+    <!-- ===================== PROPERTIES ===================== -->
+    <properties>
+        <main.class>io.github.eggy03.application.Start</main.class>
+
+        <!-- Build -->
+        <maven.compiler.release>25</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Dependencies -->
+        <license3j.version>3.3.0</license3j.version>
+        <tinylog.version>2.7.0</tinylog.version>
+        <miglayout.version>11.4.2</miglayout.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <flatlaf.version>3.7.1</flatlaf.version>
+        <jsvg.version>2.1.0</jsvg.version>
+        <jspecify.version>1.0.0</jspecify.version>
+        <slf4j.version>2.0.17</slf4j.version>
+
+        <!-- Plugins -->
+        <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+        <maven.assembly.plugin.version>3.7.1</maven.assembly.plugin.version>
+        <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
+        <jlink.maven.plugin.version>1.2.1</jlink.maven.plugin.version>
+        <jpackage.mave.plugin.version>1.7.4</jpackage.mave.plugin.version>
+
+        <!-- Extras -->
+        <app.name>license3j-gui</app.name>
+        <app.main.class>io.github.eggy03.application.Start</app.main.class>
+        <app.fatjar.name>${project.build.finalName}-jar-with-dependencies.jar</app.fatjar.name>
+        <app.fatjar.directory>${project.build.directory}/fatjar</app.fatjar.directory>
+
+        <jlink.output.directory>${project.build.directory}/runtime</jlink.output.directory>
+        <jpackage.output.directory>${project.build.directory}/output</jpackage.output.directory>
+
+        <project.windows.icon>${project.basedir}/icons/license.ico</project.windows.icon>
+        <project.linux.icon>${project.basedir}/icons/license.png</project.linux.icon>
+        <project.mac.icon>${project.basedir}/icons/license.icns</project.mac.icon>
+    </properties>
+
+    <!-- ===================== DEPENDENCIES ===================== -->
+    <dependencies>
+
+        <!-- License -->
+        <dependency>
+            <groupId>com.javax0.license3j</groupId>
+            <artifactId>license3j</artifactId>
+            <version>${license3j.version}</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>slf4j-tinylog</artifactId>
+            <version>${tinylog.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-api</artifactId>
+            <version>${tinylog.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tinylog</groupId>
+            <artifactId>tinylog-impl</artifactId>
+            <version>${tinylog.version}</version>
+        </dependency>
+
+        <!-- UI -->
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout-swing</artifactId>
+            <version>${miglayout.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>${flatlaf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.weisj</groupId>
+            <artifactId>jsvg</artifactId>
+            <version>${jsvg.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Utilities -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <!-- Annotations -->
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>${jspecify.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ===================== BUILD ===================== -->
+    <build>
+        <plugins>
+
+            <!-- Compiler -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <annotationProcessorPaths>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- Fat JAR -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assembly.plugin.version}</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!-- ===================== PROFILE ===================== -->
+    <profiles>
+        <!--JVM Builds With Jpackage-->
+        <profile>
+            <id>dist</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>${maven.resources.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-jpackage-input</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${app.fatjar.directory}</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${project.build.directory}</directory>
+                                            <includes>
+                                                <include>${app.fatjar.name}</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jlink-maven-plugin</artifactId>
+                        <version>${jlink.maven.plugin.version}</version>
+
+                        <executions>
+                            <execution>
+                                <id>jlink-runtime</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jlink</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+
+                        <configuration>
+                            <output>${jlink.output.directory}</output>
+
+                            <addModules>
+                                <addModule>java.base</addModule>
+                                <addModule>java.desktop</addModule>
+                                <addModule>java.logging</addModule>
+                                <addModule>java.xml</addModule>
+                                <addModule>java.prefs</addModule>
+                                <addModule>java.datatransfer</addModule>
+                                <addModule>java.management</addModule>
+                                <addModule>java.naming</addModule>
+                                <addModule>jdk.unsupported</addModule>
+                            </addModules>
+
+                            <stripDebug>false</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                            <noManPages>true</noManPages>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.panteleyev</groupId>
+                        <artifactId>jpackage-maven-plugin</artifactId>
+                        <version>${jpackage.mave.plugin.version}</version>
+
+                        <!-- Base config shared by all OSes -->
+                        <configuration>
+                            <name>${app.name}</name>
+                            <appVersion>${project.version}</appVersion>
+                            <vendor>eggy03</vendor>
+                            <description>${project.name}</description>
+
+                            <!-- App-image only -->
+                            <type>APP_IMAGE</type>
+
+                            <!-- Fat JAR -->
+                            <input>${app.fatjar.directory}</input>
+                            <mainJar>${app.fatjar.name}</mainJar>
+                            <mainClass>${app.main.class}</mainClass>
+
+                            <!-- Custom JRE created by jlink -->
+                            <runtimeImage>${jlink.output.directory}</runtimeImage>
+
+                            <!-- Output -->
+                            <destination>${jpackage.output.directory}</destination>
+
+                            <!-- JVM opts -->
+                            <javaOptions>
+                                <option>-Dfile.encoding=UTF-8</option>
+                            </javaOptions>
+
+                            <!-- Windows GUI -->
+                            <winConsole>false</winConsole>
+                        </configuration>
+
+                        <!-- OS-selectable executions -->
+                        <executions>
+
+                            <!-- Windows -->
+                            <execution>
+                                <id>win</id>
+                                <configuration>
+                                    <icon>${project.windows.icon}</icon>
+                                </configuration>
+                            </execution>
+
+                            <!-- Linux -->
+                            <execution>
+                                <id>linux</id>
+                                <configuration>
+                                    <icon>${project.linux.icon}</icon>
+                                </configuration>
+                            </execution>
+
+                            <!-- Mac -->
+                            <execution>
+                                <id>mac</id>
+                                <configuration>
+                                    <icon>${project.mac.icon}</icon>
+                                    <macPackageIdentifier>io.github.eggy03.license3jgui</macPackageIdentifier>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>
