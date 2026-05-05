@@ -20,9 +20,27 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Objects;
 
-// todo improve exception messages
+/**
+ * Service layer for {@link LicenseKeyPairEntity} operations.
+ *
+ * <p>Provides functionality to generate, load, save, and inspect
+ * cryptographic key pairs using the License3j library.</p>
+ *
+ * <p>Operations are performed on defensive copies where applicable
+ * to avoid unintended mutation of shared state.</p>
+ *
+ * <p>Failures are wrapped in domain-specific runtime exceptions.</p>
+ */
 public class LicenseKeyPairEntityService {
 
+    /**
+     * Generates a new key pair using the specified cipher and key size.
+     *
+     * @param cipher the cipher string (e.g., RSA, RSA/ECB/PKCS1Padding)
+     * @param size   the key size (e.g., 1024, 2048, 3072, 4096)
+     * @return a new {@link LicenseKeyPairEntity}
+     * @throws KeyGenerationException when the cipher specifies an algorithm that is not known by the encryption provider
+     */
     @NonNull
     public LicenseKeyPairEntity generateLicenseKeyPair(@NonNull String cipher, int size) {
         try {
@@ -32,6 +50,17 @@ public class LicenseKeyPairEntityService {
         }
     }
 
+    /**
+     * Loads a key pair from separate private and public key files.
+     *
+     * <p>Ensures both keys use the same cipher before combining them.</p>
+     *
+     * @param privateKeyFile the private key file
+     * @param publicKeyFile  the public key file
+     * @param keyFormat      the key format
+     * @return a combined {@link LicenseKeyPairEntity}
+     * @throws KeyReadException if validation or reading fails
+     */
     @NonNull
     public LicenseKeyPairEntity loadLicenseKeyPair(@NonNull File privateKeyFile, @NonNull File publicKeyFile, @NonNull IOFormat keyFormat) {
 
@@ -52,7 +81,7 @@ public class LicenseKeyPairEntityService {
 
             // check for cipher match
             if (!privateKeyPair.cipher().equals(publicKeyPair.cipher()))
-                throw new KeyReadException("Cypher Mismatch! Private Key has: " + privateKeyPair.cipher() + " while Public Key has: " + publicKeyPair.cipher());
+                throw new KeyReadException(String.format("Cypher Mismatch! Private Key has [%s] while Public Key has [%s]", privateKeyPair.cipher(), publicKeyPair.cipher()));
 
             final String cipher = privateKeyPair.cipher();
             PrivateKey privateKey = Objects.requireNonNull(privateKeyPair.getPair().getPrivate(), "privateKey cannot be null");
@@ -66,6 +95,19 @@ public class LicenseKeyPairEntityService {
 
     }
 
+    /**
+     * Saves the key pair to the specified folder using provided file names and format.
+     *
+     * <p>File names are validated to prevent invalid or unsafe characters.</p>
+     *
+     * @param licenseKeyPairEntity the key pair to save
+     * @param keyFormat            the output format
+     * @param privateKeyName       the private key file name
+     * @param publicKeyName        the public key file name
+     * @param keyFolder            the target directory
+     * @return a new {@link LicenseKeyPairEntity} representing the saved keys
+     * @throws KeySaveException if validation or saving fails
+     */
     @NonNull
     public LicenseKeyPairEntity saveKeys(@NonNull LicenseKeyPairEntity licenseKeyPairEntity, @NonNull IOFormat keyFormat, @NonNull String privateKeyName, @NonNull String publicKeyName, @NonNull File keyFolder) {
 
@@ -78,13 +120,13 @@ public class LicenseKeyPairEntityService {
         Objects.requireNonNull(keyFolder, "keyFolder cannot be null");
 
         if (!keyFolder.isDirectory())
-            throw new KeySaveException("Provided key folder:" + keyFolder.getPath() + "is not a directory");
+            throw new KeySaveException(String.format("Provided key folder [%s] is not a directory", keyFolder));
 
         if (!privateKeyName.matches("^[a-zA-Z0-9._-]+$"))
-            throw new KeySaveException("Private Key name:" + privateKeyName + "contains invalid characters");
+            throw new KeySaveException(String.format("Private key name '%s' contains invalid characters", privateKeyName));
 
         if (!publicKeyName.matches("^[a-zA-Z0-9._-]+$"))
-            throw new KeySaveException("Public Key name:" + publicKeyName + "contains invalid characters");
+            throw new KeySaveException(String.format("Public key name '%s' contains invalid characters", publicKeyName));
 
         LicenseKeyPair originalKeyPair = Objects.requireNonNull(licenseKeyPairEntity.licenseKeyPair(), "licenseKeyPair cannot be null");
         LicenseKeyPair copyKeyPair = LicenseKeyPair.Create.from(originalKeyPair.getPair(), originalKeyPair.cipher());
@@ -97,6 +139,16 @@ public class LicenseKeyPairEntityService {
         }
     }
 
+    /**
+     * Generates an SHA-512 digest of the public key and returns it as a Java byte array string.
+     *
+     * <p>The output includes both the digest and the raw public key bytes formatted
+     * as Java code for embedding or verification purposes.</p>
+     *
+     * @param licenseKeyPairEntity the key pair containing the public key
+     * @return formatted string containing digest and key bytes
+     * @throws KeyDigestException if the digest algorithm is unavailable
+     */
     @NonNull
     public String digestPublicKey(@NonNull LicenseKeyPairEntity licenseKeyPairEntity) {
 

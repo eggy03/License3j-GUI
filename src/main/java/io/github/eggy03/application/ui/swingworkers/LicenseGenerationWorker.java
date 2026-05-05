@@ -11,6 +11,13 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for generating a new {@link LicenseEntity}.
+ *
+ * <p>Generation is delegated to {@link LicenseEntityService}
+ * and the resultant {@link LicenseEntity} replaces the current value
+ * in a shared {@link AtomicReference}, making it available across the application.</p>
+ */
 public class LicenseGenerationWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseGenerationWorker.class);

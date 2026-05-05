@@ -13,6 +13,13 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for saving a {@link LicenseKeyPairEntity}.
+ *
+ * <p>Saving is delegated to {@link LicenseKeyPairEntityService}
+ * and the resultant {@link LicenseKeyPairEntity} replaces the current value
+ * in a shared {@link AtomicReference}</p>
+ */
 public class KeyPairSaveWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(KeyPairSaveWorker.class);

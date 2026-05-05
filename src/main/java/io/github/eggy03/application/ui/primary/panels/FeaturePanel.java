@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.component.EntityRuntimeComponent;
-import io.github.eggy03.application.component.ServiceRuntimeComponent;
+import io.github.eggy03.application.ui.component.EntityRuntimeComponent;
+import io.github.eggy03.application.ui.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.swingworkers.LicenseFeatureAdditionWorker;
 import io.github.eggy03.application.ui.swingworkers.MachineIDWorker;
 import javax0.license3j.Feature;
@@ -12,13 +12,28 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
 
+/**
+ * UI panel responsible for creating and adding features to a {@link javax0.license3j.License}
+ *
+ * <p>Dependencies are injected via {@link EntityRuntimeComponent} and
+ * {@link ServiceRuntimeComponent} </p>
+ *
+ * <p>All feature operations are executed asynchronously using SwingWorkers
+ * to avoid blocking the Event Dispatch Thread (EDT).</p>
+ *
+ * <p>Initialization follows a staged lifecycle:
+ * <ul>
+ *     <li>{@link #initUI()} – configures layout and UI properties</li>
+ *     <li>{@link #initComponents()} – adds UI components to the panel</li>
+ *     <li>{@link #initListeners()} – registers event handlers and background tasks</li>
+ * </ul>
+ */
 @SuppressWarnings("java:S1192")
 public class FeaturePanel extends JPanel {
 
@@ -51,6 +66,11 @@ public class FeaturePanel extends JPanel {
         this.serviceRuntimeComponent = Objects.requireNonNull(serviceRuntimeComponent);
     }
 
+    /**
+     * Configures layout, borders, and component properties.
+     *
+     * @return this panel instance for chaining
+     */
     public FeaturePanel initUI() {
         setLayout(new MigLayout("insets 1, fill", "[][]", "[][][][][][]"));
         setBorder(new TitledBorder("License Features"));
@@ -60,7 +80,12 @@ public class FeaturePanel extends JPanel {
         return this;
     }
 
-    public FeaturePanel addComponents() {
+    /**
+     * Adds and arranges all UI components within the panel.
+     *
+     * @return this panel instance for chaining
+     */
+    public FeaturePanel initComponents() {
 
         add(featureNameLabel, "cell 0 0 1 1, growx"); // cell column row width height grow along x-axis
         add(featureNameTextField, "cell 1 0 2 1, growx");
@@ -76,6 +101,11 @@ public class FeaturePanel extends JPanel {
         return this;
     }
 
+    /**
+     * Registers action listeners and initializes background workers:
+     *
+     * @return this panel instance for chaining
+     */
     public FeaturePanel initListeners() {
 
         // fetch machineID

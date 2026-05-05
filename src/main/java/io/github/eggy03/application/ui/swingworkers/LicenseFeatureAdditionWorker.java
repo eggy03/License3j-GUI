@@ -12,6 +12,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for adding a {@link Feature} to a {@link LicenseEntity}.
+ *
+ * <p>Feature addition is delegated to {@link LicenseEntityService}
+ * and the resultant {@link LicenseEntity} replaces the current value
+ * in a shared {@link AtomicReference}, making it available across
+ * the application.</p>
+ */
 public class LicenseFeatureAdditionWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseFeatureAdditionWorker.class);

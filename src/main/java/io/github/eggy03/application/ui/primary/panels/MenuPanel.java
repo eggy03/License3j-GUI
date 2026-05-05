@@ -6,9 +6,18 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import java.awt.GridLayout;
 
+/**
+ * UI panel responsible for creating the menu.
+ *
+ * <p>Initialization follows a staged lifecycle:
+ * <ul>
+ *     <li>{@link #initUI()} – configures layout and UI properties</li>
+ *     <li>{@link #initComponents()} – adds UI components to the panel</li>
+ *     <li>{@link #initListeners()} – registers event handlers and background tasks</li>
+ * </ul>
+ */
 @SuppressWarnings("java:S1192")
 public class MenuPanel extends JPanel {
 
@@ -22,11 +31,21 @@ public class MenuPanel extends JPanel {
     // define menu items
     private final JMenuItem aboutMenuItem = new JMenuItem("About");
 
+    /**
+     * Configures layout, borders, and component properties.
+     *
+     * @return this panel instance for chaining
+     */
     public MenuPanel initUI() {
         setLayout(new GridLayout(0, 1, 0, 0));
         return this;
     }
 
+    /**
+     * Adds and arranges all UI components within the panel.
+     *
+     * @return this panel instance for chaining
+     */
     public MenuPanel initComponents() {
         // order: menu items -> menus -> menu bar -> panel
         helpMenu.add(aboutMenuItem);
@@ -38,8 +57,13 @@ public class MenuPanel extends JPanel {
         return this;
     }
 
+    /**
+     * Registers action listeners and initializes background workers:
+     *
+     * @return this panel instance for chaining
+     */
     public MenuPanel initListeners() {
-        aboutMenuItem.addActionListener(_ -> new AboutUI().setVisible(true));
+        aboutMenuItem.addActionListener(_ -> new AboutUI().initUI().initComponents().setVisible(true));
         return this;
     }
 }

@@ -11,6 +11,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for generating a new {@link LicenseKeyPairEntity}.
+ *
+ * <p>Generation is delegated to {@link LicenseKeyPairEntityService}
+ * and the resultant {@link LicenseKeyPairEntity} replaces the current value
+ * in a shared {@link AtomicReference}, making the generated
+ * key pair available across the application.</p>
+ */
 public class KeyPairGenerationWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(KeyPairGenerationWorker.class);

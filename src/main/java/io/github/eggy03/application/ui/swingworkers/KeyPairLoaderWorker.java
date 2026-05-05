@@ -13,6 +13,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for loading a {@link LicenseKeyPairEntity}.
+ *
+ * <p>Loading is delegated to {@link LicenseKeyPairEntityService}
+ * and the resultant {@link LicenseKeyPairEntity} replaces the current value
+ * in a shared {@link AtomicReference}, making the loaded
+ * key pair available across the application.</p>
+ */
 public class KeyPairLoaderWorker extends SwingWorker<Void, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(KeyPairLoaderWorker.class);

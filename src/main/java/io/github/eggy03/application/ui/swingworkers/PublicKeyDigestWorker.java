@@ -11,6 +11,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for generating a digest of the public key
+ * from a {@link LicenseKeyPairEntity}.
+ *
+ * <p>Task is delegated to {@link LicenseKeyPairEntityService},
+ * and the resulting formatted output is returned for logging or display.
+ * This worker does not modify the shared {@link AtomicReference} state.</p>
+ */
 public class PublicKeyDigestWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(PublicKeyDigestWorker.class);

@@ -11,6 +11,13 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for viewing a {@link javax0.license3j.License}.
+ *
+ * <p>Task is delegated to {@link LicenseEntityService}, and the
+ * resulting string representation of the license is returned for display
+ * or logging. The worker does not modify the shared state.</p>
+ */
 public class LicenseViewWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseViewWorker.class);

@@ -1,8 +1,9 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.component.EntityRuntimeComponent;
 import io.github.eggy03.application.entity.LicenseEntity;
 import io.github.eggy03.application.entity.LicenseKeyPairEntity;
+import io.github.eggy03.application.ui.component.EntityRuntimeComponent;
+import io.github.eggy03.application.ui.component.ServiceRuntimeComponent;
 import net.miginfocom.swing.MigLayout;
 import org.jspecify.annotations.NonNull;
 
@@ -14,6 +15,22 @@ import javax.swing.Timer;
 import javax.swing.border.TitledBorder;
 import java.util.Objects;
 
+/**
+ * UI panel responsible for showing real-time status of {@link javax0.license3j.License} and {@link javax0.license3j.crypto.LicenseKeyPair}
+ *
+ * <p>Dependencies are injected via {@link EntityRuntimeComponent} and
+ * {@link ServiceRuntimeComponent} </p>
+ *
+ * <p>All feature operations are executed asynchronously using SwingWorkers
+ * to avoid blocking the Event Dispatch Thread (EDT).</p>
+ *
+ * <p>Initialization follows a staged lifecycle:
+ * <ul>
+ *     <li>{@link #initUI()} – configures layout and UI properties</li>
+ *     <li>{@link #initComponents()} – adds UI components to the panel</li>
+ *     <li>{@link #initListeners()} – registers event handlers and background tasks</li>
+ * </ul>
+ */
 @SuppressWarnings("java:S1192")
 public class StatusPanel extends JPanel {
 
@@ -39,6 +56,11 @@ public class StatusPanel extends JPanel {
         this.entityRuntimeComponent = Objects.requireNonNull(entityRuntimeComponent);
     }
 
+    /**
+     * Configures layout, borders, and component properties.
+     *
+     * @return this panel instance for chaining
+     */
     public StatusPanel initUI() {
         setLayout(new MigLayout("insets 1, fillx", "[][]", "[][][][]"));
         setBorder(new TitledBorder("License Status"));
@@ -51,6 +73,11 @@ public class StatusPanel extends JPanel {
         return this;
     }
 
+    /**
+     * Adds and arranges all UI components within the panel.
+     *
+     * @return this panel instance for chaining
+     */
     public StatusPanel initComponents() {
         add(licenseLoadedStatusLabel, "cell 0 0 1 1, grow");
         add(licenseLoadedStatusTextField, "cell 1 0 1 1, grow");
@@ -67,6 +94,11 @@ public class StatusPanel extends JPanel {
         return this;
     }
 
+    /**
+     * Registers action listeners and initializes background workers:
+     *
+     * @return this panel instance for chaining
+     */
     public StatusPanel initListeners() {
 
         new Timer(100, _ -> {

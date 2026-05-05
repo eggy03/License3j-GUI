@@ -12,6 +12,12 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for verifying a {@link LicenseEntity}.
+ *
+ * <p>Verification is delegated to {@link LicenseEntityService}
+ * and uses a {@link LicenseKeyPairEntity} to check for signature validity.</p>
+ */
 public class LicenseVerifyWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseVerifyWorker.class);

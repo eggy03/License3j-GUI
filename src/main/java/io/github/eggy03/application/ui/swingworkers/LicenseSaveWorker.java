@@ -13,6 +13,13 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for saving a {@link LicenseEntity}.
+ *
+ * <p>Saving is delegated to {@link LicenseEntityService}
+ * and the resultant {@link LicenseEntity} replaces the current value
+ * in a shared {@link AtomicReference}, making it available across the application.</p>
+ */
 public class LicenseSaveWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseSaveWorker.class);

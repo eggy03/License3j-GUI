@@ -1,7 +1,7 @@
 package io.github.eggy03.application.ui.primary.panels;
 
-import io.github.eggy03.application.component.EntityRuntimeComponent;
-import io.github.eggy03.application.component.ServiceRuntimeComponent;
+import io.github.eggy03.application.ui.component.EntityRuntimeComponent;
+import io.github.eggy03.application.ui.component.ServiceRuntimeComponent;
 import io.github.eggy03.application.ui.swingworkers.LicenseGenerationWorker;
 import io.github.eggy03.application.ui.swingworkers.LicenseLoadWorker;
 import io.github.eggy03.application.ui.swingworkers.LicenseSaveWorker;
@@ -16,13 +16,28 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
 
+/**
+ * UI panel responsible creating, loading, signing, displaying and saving a {@link javax0.license3j.License}
+ *
+ * <p>Dependencies are injected via {@link EntityRuntimeComponent} and
+ * {@link ServiceRuntimeComponent} </p>
+ *
+ * <p>All feature operations are executed asynchronously using SwingWorkers
+ * to avoid blocking the Event Dispatch Thread (EDT).</p>
+ *
+ * <p>Initialization follows a staged lifecycle:
+ * <ul>
+ *     <li>{@link #initUI()} – configures layout and UI properties</li>
+ *     <li>{@link #initComponents()} – adds UI components to the panel</li>
+ *     <li>{@link #initListeners()} – registers event handlers and background tasks</li>
+ * </ul>
+ */
 @SuppressWarnings("java:S1192")
 public class LicensePanel extends JPanel {
 
@@ -56,6 +71,11 @@ public class LicensePanel extends JPanel {
         this.serviceRuntimeComponent = Objects.requireNonNull(serviceRuntimeComponent);
     }
 
+    /**
+     * Configures layout, borders, and component properties.
+     *
+     * @return this panel instance for chaining
+     */
     public LicensePanel initUI() {
         setLayout(new MigLayout("insets 1, fill", "[][][]", "[][][][][][]"));
         setBorder(new TitledBorder("License Functions"));
@@ -63,6 +83,11 @@ public class LicensePanel extends JPanel {
         return this;
     }
 
+    /**
+     * Adds and arranges all UI components within the panel.
+     *
+     * @return this panel instance for chaining
+     */
     public LicensePanel initComponents() {
 
         add(newLicenseButton, "cell 0 0 3 1, growx"); // cell column row width height grow along x-axis
@@ -79,6 +104,11 @@ public class LicensePanel extends JPanel {
         return this;
     }
 
+    /**
+     * Registers action listeners and initializes background workers:
+     *
+     * @return this panel instance for chaining
+     */
     public LicensePanel initListeners() {
 
         newLicenseButton.addActionListener(_ ->

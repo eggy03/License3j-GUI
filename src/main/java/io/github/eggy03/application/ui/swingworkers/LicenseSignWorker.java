@@ -12,6 +12,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * {@link SwingWorker} responsible for signing a {@link LicenseEntity}.
+ *
+ * <p>Signing is delegated to {@link LicenseEntityService}
+ * which uses a {@link LicenseKeyPairEntity}, and the resultant {@link LicenseEntity}
+ * replaces the current value in a shared {@link AtomicReference}, making it
+ * available across the application.</p>
+ */
 public class LicenseSignWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseSignWorker.class);

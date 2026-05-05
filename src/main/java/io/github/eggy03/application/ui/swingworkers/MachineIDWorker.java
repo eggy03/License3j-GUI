@@ -10,6 +10,12 @@ import javax.swing.SwingWorker;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * {@link SwingWorker} responsible for retrieving the machine identifier.
+ *
+ * <p>The machine ID is obtained using {@link HardwareBinder} in a background
+ * thread and, upon completion, populated into the provided {@link JTextField}.</p>
+ */
 public class MachineIDWorker extends SwingWorker<String, Void> {
 
     private static final Logger log = LoggerFactory.getLogger(MachineIDWorker.class);
