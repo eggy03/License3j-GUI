@@ -17,7 +17,7 @@ public class Start {
 
         try {
             EventQueue.invokeLater(() -> {
-                new GlobalUISettings().enableRoundComponents().enableTabSeparators(true);
+                new GlobalUISettings("com.formdev.flatlaf.themes.FlatMacDarkLaf").enableRoundComponents().enableTabSeparators(true);
                 new MainUI(new EntityRuntimeComponent(), new ServiceRuntimeComponent())
                         .initUI()
                         .initComponents()

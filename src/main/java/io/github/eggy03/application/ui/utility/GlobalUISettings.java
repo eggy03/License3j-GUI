@@ -21,11 +21,11 @@ import java.util.Objects;
 public class GlobalUISettings {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalUISettings.class);
-    private static final String DEFAULT_LAF = "com.formdev.flatlaf.themes.FlatMacDarkLaf";
+    private static final String DEFAULT_LAF = UIManager.getSystemLookAndFeelClassName();
 
     /**
-     * Creates a configuration instance using the default FlatLaf theme:
-     * {@code com.formdev.flatlaf.themes.FlatMacDarkLaf}.
+     * Creates a configuration instance using the default LAF returned by
+     * {@link UIManager#getSystemLookAndFeelClassName()}
      *
      * <p>If the Look and Feel cannot be applied, the error is logged and the
      * application continues with the existing/default LAF.</p>
