@@ -13,7 +13,7 @@ public class Start {
 
     private static final Logger log = LoggerFactory.getLogger(Start.class);
 
-    void main() {
+    public static void main(String[] args) {
 
         try {
             EventQueue.invokeLater(() -> {

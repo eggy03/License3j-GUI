@@ -110,7 +110,7 @@ public class FeaturePanel extends JPanel {
         new MachineIDWorker(machineIdTextField).execute();
 
         // addFeatureButton action listener
-        addFeatureButton.addActionListener(_ -> {
+        addFeatureButton.addActionListener(actionEvent -> {
 
             String featureName = featureNameTextField.getText();
             String featureType = String.valueOf(featureTypeComboBox.getSelectedItem());
@@ -125,7 +125,7 @@ public class FeaturePanel extends JPanel {
         });
 
         // addMachineIdButton action listener
-        addMachineIdButton.addActionListener(_ -> {
+        addMachineIdButton.addActionListener(actionEvent -> {
             Feature feature = Feature.Create.from("licenseId:UUID=" + machineIdTextField.getText());
             new LicenseFeatureAdditionWorker(
                     entityRuntimeComponent.licenseEntityRef(),

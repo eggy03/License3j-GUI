@@ -124,7 +124,7 @@ public class KeyPanel extends JPanel {
      */
     public KeyPanel initListeners() {
 
-        generateKeysButton.addActionListener(_ ->
+        generateKeysButton.addActionListener(actionEvent ->
                 new KeyPairGenerationWorker(
                         entityRuntimeComponent.licenseKeyPairRef(),
                         serviceRuntimeComponent.licenseKeyPairEntityServiceRef(),
@@ -133,14 +133,14 @@ public class KeyPanel extends JPanel {
                 ).execute()
         );
 
-        digestPublicKeyButton.addActionListener(_ ->
+        digestPublicKeyButton.addActionListener(actionEvent ->
                 new PublicKeyDigestWorker(
                         entityRuntimeComponent.licenseKeyPairRef(),
                         serviceRuntimeComponent.licenseKeyPairEntityServiceRef()
                 ).execute()
         );
 
-        saveKeysButton.addActionListener(_ -> {
+        saveKeysButton.addActionListener(actionEvent -> {
             JFileChooser keySaveFolderChooser = new JFileChooser();
             keySaveFolderChooser.setDialogTitle("Choose a directory to save your keys");
             keySaveFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -160,7 +160,7 @@ public class KeyPanel extends JPanel {
             }
         });
 
-        loadKeysButton.addActionListener(_ -> {
+        loadKeysButton.addActionListener(actionEvent -> {
 
             JFileChooser privateKeySelector = new JFileChooser();
             privateKeySelector.setDialogTitle("Load Private Key");

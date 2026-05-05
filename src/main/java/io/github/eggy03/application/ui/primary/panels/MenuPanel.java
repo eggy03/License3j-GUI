@@ -69,7 +69,7 @@ public class MenuPanel extends JPanel {
      * @return this panel instance for chaining
      */
     public MenuPanel initListeners() {
-        aboutMenuItem.addActionListener(_ -> new AboutUI().initUI().initComponents().setVisible(true));
+        aboutMenuItem.addActionListener(actionEvent -> new AboutUI().initUI().initComponents().setVisible(true));
         return this;
     }
 }

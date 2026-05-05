@@ -111,14 +111,14 @@ public class LicensePanel extends JPanel {
      */
     public LicensePanel initListeners() {
 
-        newLicenseButton.addActionListener(_ ->
+        newLicenseButton.addActionListener(actionEvent ->
                 new LicenseGenerationWorker(
                         entityRuntimeComponent.licenseEntityRef(),
                         serviceRuntimeComponent.licenseEntityServiceRef()
                 ).execute()
         );
 
-        loadLicenseButton.addActionListener(_ -> {
+        loadLicenseButton.addActionListener(actionEvent -> {
             JFileChooser licenseFileChooser = new JFileChooser();
             licenseFileChooser.setDialogTitle("Choose a License file to load");
             licenseFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -136,14 +136,14 @@ public class LicensePanel extends JPanel {
             }
         });
 
-        displayLicenseButton.addActionListener(_ ->
+        displayLicenseButton.addActionListener(actionEvent ->
                 new LicenseViewWorker(
                         entityRuntimeComponent.licenseEntityRef(),
                         serviceRuntimeComponent.licenseEntityServiceRef()
                 ).execute()
         );
 
-        signLicenseButton.addActionListener(_ ->
+        signLicenseButton.addActionListener(actionEvent ->
                 new LicenseSignWorker(
                         entityRuntimeComponent.licenseEntityRef(),
                         entityRuntimeComponent.licenseKeyPairRef(),
@@ -152,7 +152,7 @@ public class LicensePanel extends JPanel {
                 ).execute()
         );
 
-        verifyLicenseButton.addActionListener(_ ->
+        verifyLicenseButton.addActionListener(actionEvent ->
                 new LicenseVerifyWorker(
                         entityRuntimeComponent.licenseEntityRef(),
                         entityRuntimeComponent.licenseKeyPairRef(),
@@ -160,7 +160,7 @@ public class LicensePanel extends JPanel {
                 ).execute()
         );
 
-        saveLicenseButton.addActionListener(_ -> {
+        saveLicenseButton.addActionListener(actionEvent -> {
             JFileChooser licenseSaveFolderChooser = new JFileChooser();
             licenseSaveFolderChooser.setDialogTitle("Choose a directory to save your license");
             licenseSaveFolderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

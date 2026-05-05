@@ -101,7 +101,7 @@ public class StatusPanel extends JPanel {
      */
     public StatusPanel initListeners() {
 
-        new Timer(100, _ -> {
+        new Timer(100, actionEvent -> {
 
             LicenseEntity licenseEntity = entityRuntimeComponent.licenseEntityRef().get();
             LicenseKeyPairEntity licenseKeyPairEntity = entityRuntimeComponent.licenseKeyPairRef().get();

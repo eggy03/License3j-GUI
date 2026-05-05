@@ -69,7 +69,7 @@ public class LogPanel extends JPanel {
     public LogPanel initListeners() {
 
         // poll log queue every 100ms and flush log to text area in UI
-        new Timer(100, _ -> {
+        new Timer(100, actionEvent -> {
             String logMessage = LogQueue.getLog();
             if (logMessage != null) SwingUtilities.invokeLater(() -> logTextArea.append(logMessage));
         }).start();
