@@ -17,7 +17,7 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            arch: x64
+            arch: x86_64
             jpackage_goal: win
 
           - os: windows-11-arm
@@ -27,7 +27,7 @@ jobs:
 
           - os: ubuntu-latest
             platform: linux
-            arch: x64
+            arch: x86_64
             jpackage_goal: linux
 
           - os: ubuntu-24.04-arm
@@ -37,7 +37,7 @@ jobs:
 
           - os: macos-26-intel
             platform: mac
-            arch: x64
+            arch: x86_64
             jpackage_goal: mac
 
           - os: macos-latest
@@ -105,9 +105,9 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: |
-            license3j-gui-windows-x64/license3j-gui-${{ github.ref_name }}-windows-x64.zip
+            license3j-gui-windows-x86_64/license3j-gui-${{ github.ref_name }}-windows-x86_64.zip
             license3j-gui-windows-arm64/license3j-gui-${{ github.ref_name }}-windows-arm64.zip
-            license3j-gui-linux-x64/license3j-gui-${{ github.ref_name }}-linux-x64.tar.gz
+            license3j-gui-linux-x86_64/license3j-gui-${{ github.ref_name }}-linux-x86_64.tar.gz
             license3j-gui-linux-arm64/license3j-gui-${{ github.ref_name }}-linux-arm64.tar.gz
-            license3j-gui-mac-x64/license3j-gui-${{ github.ref_name }}-mac-x64.tar.gz
+            license3j-gui-mac-x86_64/license3j-gui-${{ github.ref_name }}-mac-x86_64.tar.gz
             license3j-gui-mac-arm64/license3j-gui-${{ github.ref_name }}-mac-arm64.tar.gz
